@@ -107,6 +107,10 @@ public class SVGSimpleMidlet extends MIDlet implements CommandListener {
     }
      return svgCanvas;
       }
+/*
+ * getList is responsible for creating a new list of all available commands for user
+ * Will include See Campus, Get Nearest Bus Stop, Exit, Find Nearest Bus, etc. 
+ */
 
        public List getList() {
         if (list == null) {
