@@ -3,7 +3,7 @@
          "http://www.w3.org/Graphics/SVG/1.2/DTD/svg11-tiny.dtd">
 
 <svg width="240" height="320"  version="1.1" xmlns="http://www.w3.org/2000/svg" baseProfile="tiny">
-<image width="240" height="320" xmlns:xlink="http://www.w3.org/1999/xlink"   xlink:href="http://localhost/images/campus.jpg" />
+<image width="240" height="320" xmlns:xlink="http://www.w3.org/1999/xlink"   xlink:href="http://128.113.2.9/tour/RPI_Campus_Map1.gif" />
 
 
 <line x1="0" y1="40" x2="240" y2="40" fill="none" stroke="red" strokewidth="
