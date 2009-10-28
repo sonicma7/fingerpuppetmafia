@@ -21,7 +21,7 @@ import javax.microedition.midlet.*;
  */
 public class SVGSimpleMidlet extends MIDlet implements CommandListener {
     SVGStaticCanvas svgCanvas = null;
-    Command exit,zoomin,zoomout,cmd1;
+    Command exit,zoomin,zoomout,cmd1,eastroute,westroute;
     LocPosition lp;
     TextBox tb1;
     Display disp;
@@ -76,21 +76,37 @@ public class SVGSimpleMidlet extends MIDlet implements CommandListener {
         }
         // write post-action user code here
     }
-      public SVGStaticCanvas getCanvas()
+
+    /*getCanvas sets up the canvas to have a menu in the lower right hand
+     * corner that has the following options: zoom in/out, exit, display shuttle
+     * route east/west 
+     */
+
+      public SVGStaticCanvas getCanvas(int canv)
       {
-         if (svgCanvas== null){
-             svgCanvas = new SVGStaticCanvas(true, lp);
+         if (svgCanvas == null){
+             svgCanvas = new SVGStaticCanvas(true, lp, canv);
         
         exit = new Command("Exit", Command.SCREEN, 0);
         zoomin = new Command("Zoom in", Command.SCREEN, 1);
         zoomout = new Command("Zoom out", Command.SCREEN, 1);
+        eastroute = new Command("Show East Shuttle Route", Command.SCREEN, 1);
+        westroute = new Command("Show West Shuttle Route", Command.SCREEN, 1);
         svgCanvas.addCommand(exit);
         svgCanvas.addCommand(zoomin);
         svgCanvas.addCommand(zoomout);
+        svgCanvas.addCommand(eastroute);
+        svgCanvas.addCommand(westroute);
         svgCanvas.setCommandListener(new CommandListener() {
+
+ /* CommandAction listens for menu options once in the campus map, such as
+  * zoom in, zoom out, exit, etc.  As of right now it also listens for displaying
+  * the shuttle routes (east/west) that are available
+  */
         public void commandAction(Command c, Displayable d) {
           if(c == exit) {
               canvThr = null;
+              svgCanvas = null;
               
              disp.setCurrent( getList());
           }  else {
@@ -99,8 +115,28 @@ public class SVGSimpleMidlet extends MIDlet implements CommandListener {
               } else {
                   if(c== zoomout) {
                  svgCanvas.zoomout();
-                                   }
-                   }          }
+                  } else {
+                      if(c== eastroute){
+                          svgCanvas = null;
+                          getCanvas(1);
+                          canvThr = new Thread(svgCanvas);
+                          canvThr.start();
+                          disp.setCurrent(svgCanvas);
+                      } else {
+                      if(c== westroute){
+                          svgCanvas = null;
+                          getCanvas(2);
+                          canvThr = new Thread(svgCanvas);
+                          canvThr.start();
+                          disp.setCurrent(svgCanvas);
+
+                      }
+
+                    }
+
+                    }
+                  }
+                }
          }          }
         );
 
@@ -133,7 +169,7 @@ public class SVGSimpleMidlet extends MIDlet implements CommandListener {
                 // write post-action user code here
             } else if (__selectedString.equals("See Campus")) {
                 if(svgCanvas == null) {
-                    svgCanvas = getCanvas();
+                    svgCanvas = getCanvas(3);
                     canvThr = new Thread(svgCanvas);
                     canvThr.start();
                 }
