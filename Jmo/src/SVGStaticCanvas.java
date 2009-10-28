@@ -24,18 +24,42 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
         int xcord=0, ycord=0;
         LocPosition mylp;
 
-        protected   SVGStaticCanvas(boolean supKeyEvent,LocPosition lp ) {
+        /* SVGStaticCanvas sets up our canvases, depending on which canvas we want called.
+         * Canvas 1 = East bus route, 2 = West bus route, else regular campus map
+         *
+         */
+        protected   SVGStaticCanvas(boolean supKeyEvent,LocPosition lp, int canvas ) {
             super(true);
             mylp = lp;
             gc = ScalableGraphics.createInstance();
           this.setFullScreenMode(true);
+                   
+          if(canvas == 1){
+            try{
+               InputStream is = getClass().getResourceAsStream("East.svg");
+               svgImage = (SVGImage) SVGImage.createImage(is, null);
+                 }catch(Exception e){
+                    e.printStackTrace();
+                 }
+           } else {
+               if(canvas== 2){
                    try{
-               InputStream is = getClass().getResourceAsStream("Campus.svg");
-                       
-                svgImage = (SVGImage) SVGImage.createImage(is, null);
-            }catch(Exception e){
-                e.printStackTrace();
-            }
+                       InputStream is = getClass().getResourceAsStream("West.svg");
+                       svgImage = (SVGImage) SVGImage.createImage(is, null);
+                         }catch(Exception e){
+                            e.printStackTrace();
+                         }
+               } else{
+                   try{
+                       InputStream is = getClass().getResourceAsStream("Campus.svg");
+                       svgImage = (SVGImage) SVGImage.createImage(is, null);
+                         }catch(Exception e){
+                            e.printStackTrace();
+                         }
+                       }
+
+           }
+                  
             
 myEl = (SVGSVGElement)(svgImage.getDocument().getDocumentElement());
 myRect = myEl.getBBox();

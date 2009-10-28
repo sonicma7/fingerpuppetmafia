@@ -1,37 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG Tiny 1.2//EN"
-         "http://www.w3.org/Graphics/SVG/1.2/DTD/svg11-tiny.dtd">
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1 Tiny//EN"
+	"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11-tiny.dtd">
 
-<svg width="240" height="320"  version="1.1" xmlns="http://www.w3.org/2000/svg" baseProfile="tiny">
-<image width="240" height="320" xmlns:xlink="http://www.w3.org/1999/xlink"   xlink:href="http://128.113.2.9/tour/RPI_Campus_Map1.gif" />
+<svg width="240" height="320"  version="1.1"
+xmlns="http://www.w3.org/2000/svg" baseProfile="tiny">
 
+
+
+    <image width="240" height="320"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xlink:href="http://fingerpuppetmafia.googlecode.com/svn/trunk/Jmo/campus2.jpeg">
+    </image>
 
 <line x1="0" y1="40" x2="240" y2="40" fill="none" stroke="red" strokewidth="
 2" />
-<line x1="0" y1="80" x2="240" y2="80" fill="none" stroke="red" strokewidth="
-2" />
-<line x1="0" y1="120" x2="240" y2="120" fill="none" stroke="red" strokewidth="
-2" />
-<line x1="0" y1="160" x2="240" y2="160" fill="none" stroke="red" strokewidth="
-2" />
-<line x1="0" y1="200" x2="240" y2="200" fill="none" stroke="red" strokewidth="
-2" />
-<line x1="0" y1="240" x2="240" y2="240" fill="none" stroke="red" strokewidth="
-2" />
-<line x1="0" y1="280" x2="240" y2="280" fill="none" stroke="red" strokewidth="
-2" />
 
-<line x1="40" y1="0" x2="40" y2="320" fill="none" stroke="red" strokewidth="
-2" />
-<line x1="80" y1="0" x2="80" y2="320" fill="none" stroke="red" strokewidth="
-2" />
-<line x1="120" y1="0" x2="120" y2="320" fill="none" stroke="red" strokewidth="
-2" />
-<line x1="160" y1="0" x2="160" y2="320" fill="none" stroke="red" strokewidth="
-2" />
-<line x1="200" y1="0" x2="200" y2="320" fill="none" stroke="red" strokewidth="
-2" />
-<line x1="240" y1="0" x2="240" y2="320" fill="none" stroke="red" strokewidth="
-2" />
 
 </svg>
