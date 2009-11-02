@@ -16,12 +16,10 @@ import javax.microedition.lcdui.TextField;
 import javax.microedition.midlet.*;
 
 
-/**
- * @author jayavenu
- */
+
 public class SVGSimpleMidlet extends MIDlet implements CommandListener {
     SVGStaticCanvas svgCanvas = null;
-    Command exit,zoomin,zoomout,cmd1,eastroute,westroute;
+    Command exit,zoomin,zoomout,cmd1,getstop,getshuttle;
     LocPosition lp;
     TextBox tb1;
     Display disp;
@@ -63,85 +61,72 @@ public class SVGSimpleMidlet extends MIDlet implements CommandListener {
     }
 
     public void commandAction(Command command, Displayable displayable) {
-        // write pre-action user code here
         if (command == cmd1) {
             disp.setCurrent(getList());
         }
         if (displayable == list) {
             if (command == List.SELECT_COMMAND) {
-                // write pre-action user code here
                 listAction();
-                // write post-action user code here
             }
         }
-        // write post-action user code here
+
     }
 
     /*getCanvas sets up the canvas to have a menu in the lower right hand
-     * corner that has the following options: zoom in/out, exit, display shuttle
-     * route east/west 
+     * corner that has the following options: zoom in/out, exit, find closest shuttle
+     * stop, find closest shuttle
      */
 
       public SVGStaticCanvas getCanvas(int canv)
       {
          if (svgCanvas == null){
-             svgCanvas = new SVGStaticCanvas(true, lp, canv);
+            svgCanvas = new SVGStaticCanvas(true, lp, canv);
         
-        exit = new Command("Exit", Command.SCREEN, 0);
-        zoomin = new Command("Zoom in", Command.SCREEN, 1);
-        zoomout = new Command("Zoom out", Command.SCREEN, 1);
-        eastroute = new Command("Show East Shuttle Route", Command.SCREEN, 1);
-        westroute = new Command("Show West Shuttle Route", Command.SCREEN, 1);
-        svgCanvas.addCommand(exit);
-        svgCanvas.addCommand(zoomin);
-        svgCanvas.addCommand(zoomout);
-        svgCanvas.addCommand(eastroute);
-        svgCanvas.addCommand(westroute);
-        svgCanvas.setCommandListener(new CommandListener() {
+            exit = new Command("Exit", Command.SCREEN, 0);
+            zoomin = new Command("Zoom in", Command.SCREEN, 1);
+            zoomout = new Command("Zoom out", Command.SCREEN, 1);
+            getstop = new Command("Show Closest Shuttle Stop", Command.SCREEN, 1);
+            getshuttle = new Command("Show Closest Shuttle", Command.SCREEN, 1);
+            svgCanvas.addCommand(exit);
+            svgCanvas.addCommand(zoomin);
+            svgCanvas.addCommand(zoomout);
+            svgCanvas.addCommand(getstop);
+            svgCanvas.addCommand(getshuttle);
+            svgCanvas.setCommandListener(new CommandListener() {
 
  /* CommandAction listens for menu options once in the campus map, such as
-  * zoom in, zoom out, exit, etc.  As of right now it also listens for displaying
-  * the shuttle routes (east/west) that are available
+  * zoom in, zoom out, find closest shuttle stop and find closest shuttle.  
   */
-        public void commandAction(Command c, Displayable d) {
-          if(c == exit) {
-              canvThr = null;
-              svgCanvas = null;
-              
-             disp.setCurrent( getList());
-          }  else {
-              if(c == zoomin) {
-                  svgCanvas.zoomin();
-              } else {
-                  if(c== zoomout) {
-                 svgCanvas.zoomout();
-                  } else {
-                      if(c== eastroute){
-                          svgCanvas = null;
-                          getCanvas(1);
-                          canvThr = new Thread(svgCanvas);
-                          canvThr.start();
-                          disp.setCurrent(svgCanvas);
+                public void commandAction(Command c, Displayable d) {
+                  if(c == exit) {
+                      canvThr = null;
+                      svgCanvas = null;
+
+                     disp.setCurrent( getList());
+                  }  else {
+                      if(c == zoomin) {
+                          svgCanvas.zoomin();
                       } else {
-                      if(c== westroute){
-                          svgCanvas = null;
-                          getCanvas(2);
-                          canvThr = new Thread(svgCanvas);
-                          canvThr.start();
-                          disp.setCurrent(svgCanvas);
+                          if(c== zoomout) {
+                         svgCanvas.zoomout();
+                          } else {
+                              if(c== getstop){
 
-                      }
+                              } else {
+                                  if(c== getshuttle){
 
-                    }
+                                  }
 
-                    }
-                  }
-                }
-         }          }
-        );
+                                }
 
-    }
-     return svgCanvas;
+                            }
+                          }
+                        }
+                 }
+            });
+
+          }
+        return svgCanvas;
       }
 /*
  * getList is responsible for creating a new list of all available commands for user
@@ -154,33 +139,44 @@ public class SVGSimpleMidlet extends MIDlet implements CommandListener {
             list = new List("list", Choice.IMPLICIT);
             list.append("Get Location",null);
             list.append("See Campus",null);
+            list.append("See Shuttle Route East",null);
+            list.append("See Shuttle Route West",null);
             list.append("Exit",null);
             list.setCommandListener(this);
-            // write post-init user code here
         }
         return list;
     }
        void listAction()
        {String __selectedString = getList().getString(getList().getSelectedIndex());
+        int route = 0;      //used to determine what route is selected
         if (__selectedString != null) {
             if (__selectedString.equals("Get Location")) {
-               disp.setCurrent(tb1); // write pre-action user code here
+               disp.setCurrent(tb1); 
                 //switchDisplayable(null, getForm());
                 // write post-action user code here
             } else if (__selectedString.equals("See Campus")) {
-                if(svgCanvas == null) {
-                    svgCanvas = getCanvas(3);
-                    canvThr = new Thread(svgCanvas);
-                    canvThr.start();
-                }
-                disp.setCurrent(svgCanvas);// write pre-action user code here
-
-                // write post-action user code here
-            } else if (__selectedString.equals("Exit")) {
-               notifyDestroyed(); // write pre-action user code here
-
-                // write post-action user code here
+                route = 3;      //case for empty map
             }
+            else if (__selectedString.equals("See Shuttle Route East")) {
+                route = 1;      //case for East Shuttle Route Highlighted
+            }
+            else if (__selectedString.equals("See Shuttle Route West")) {
+                route = 2;      //case for West Shuttle Route Highlighted
+            }
+            
+                
+             else if (__selectedString.equals("Exit")) {
+               notifyDestroyed(); //moves to the main screen
+               
+            }
+        }
+        /* if there is a change in route from when it was created, display new canvas */
+        if (route != 0){
+            svgCanvas = null;
+            svgCanvas = getCanvas(route);
+            canvThr = new Thread(svgCanvas);
+            canvThr.start();
+            disp.setCurrent(svgCanvas);
         }
        }
 }

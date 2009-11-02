@@ -3,10 +3,7 @@
  * and open the template in the editor.
  */
 
-/**
- *
- * @author jayavenu
- */
+
 import java.util.Date;
 import javax.microedition.lcdui.TextBox;
 import javax.microedition.location.*;

@@ -80,7 +80,7 @@ myRect = myEl.getBBox();
             g.setColor(0x00ff5050);
             
             gc.render(0, 0, svgImage);
-            g.setColor(0x00000000);
+            g.setColor(0x0ffffff);
             g.fillRect(xcord + (int)(globx), ycord + (int)(globy),8,8);
             gc.releaseTarget();
         }
