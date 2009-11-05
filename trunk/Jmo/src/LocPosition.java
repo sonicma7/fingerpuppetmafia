@@ -8,32 +8,32 @@ import java.util.Date;
 import javax.microedition.lcdui.TextBox;
 import javax.microedition.location.*;
 public class LocPosition implements Runnable, LocationListener {
-Location locPos;
-StringBuffer sb = null;
+    Location locPos;
+    StringBuffer sb = null;
 
-double latitude, longitude=0;
-boolean coord_valid;
-LocationProvider provider= null;
-TextBox ltb1 ;
-Coordinates coordinates = null;
+    double latitude, longitude=0;
+    boolean coord_valid;
+    LocationProvider provider= null;
+    TextBox ltb1;
+    Coordinates coordinates = null;
 
 
     public void LocPosition() {
     }
-     LocPosition(TextBox t1) {
-         ltb1=t1;
-         sb = new StringBuffer("");
-         ltb1.setString("In Loc Position");
+    LocPosition(TextBox t1) {
+        ltb1=t1;
+        sb = new StringBuffer("");
+        ltb1.setString("In Loc Position");
         try {
             Criteria crit = new Criteria();
-    crit.setCostAllowed(true); //default value
+            crit.setCostAllowed(true); //default value
      
-    crit.setPreferredPowerConsumption(Criteria.NO_REQUIREMENT);
+            crit.setPreferredPowerConsumption(Criteria.NO_REQUIREMENT);
             provider = LocationProvider.getInstance(crit);
         } catch (LocationException ex) {
             ex.printStackTrace();
         }
-      provider.setLocationListener(this,-1,-1,-1);
+        provider.setLocationListener(this,-1,-1,-1);
        //
      //getLocInstance();
     }
@@ -65,7 +65,7 @@ Coordinates coordinates = null;
     public void providerStateChanged(LocationProvider provider2, int arg1) {
        
 
-}
+    }
     public double getLatitude(){
         return latitude;
     }
