@@ -21,26 +21,33 @@ public class SVGSimpleMidlet extends MIDlet implements CommandListener {
     SVGStaticCanvas svgCanvas = null;
     Command exit,zoomin,zoomout,cmd1,getstop,getshuttle;
     LocPosition lp;
+    SimulateData sd;
     TextBox tb1;
+    TextBox tb2;
     Display disp;
-    Thread canvThr,lpThr = null;
+    Thread canvThr,lpThr = null, sdThr = null;
     List list= null;
     public void startApp() {
         disp  = Display.getDisplay(this);
         //svgCanvas = getCanvas();
          cmd1 = new Command("Back",Command.BACK, 0);
-    tb1 = new  TextBox(" "," ",150, TextField.ANY );
+    tb1 = new TextBox(" "," ",150, TextField.ANY );
+    tb2 = new TextBox(" "," ", 150, TextField.ANY );
 
-     lp = new  LocPosition(tb1);
+    lp = new LocPosition(tb1);
+    sd = new SimulateData(tb2);
 
     tb1.addCommand(cmd1);
     tb1.setCommandListener(this);
-
+    tb2.addCommand(cmd1);
+    tb2.setCommandListener(this);
 
     lpThr = new Thread(lp);
+    sdThr = new Thread(sd);
 
     try {
         lpThr.start();
+        sdThr.start();
     }  catch ( Exception e2) {
         e2.printStackTrace();
     }
@@ -111,10 +118,8 @@ public class SVGSimpleMidlet extends MIDlet implements CommandListener {
                          svgCanvas.zoomout();
                           } else {
                               if(c== getstop){
-
                               } else {
                                   if(c== getshuttle){
-
                                   }
 
                                 }
@@ -127,7 +132,7 @@ public class SVGSimpleMidlet extends MIDlet implements CommandListener {
 
           }
         return svgCanvas;
-      }
+    }
 /*
  * getList is responsible for creating a new list of all available commands for user
  * Will include See Campus, Get Nearest Bus Stop, Exit, Find Nearest Bus, etc. 
@@ -141,6 +146,7 @@ public class SVGSimpleMidlet extends MIDlet implements CommandListener {
             list.append("See Campus",null);
             list.append("See Shuttle Route East",null);
             list.append("See Shuttle Route West",null);
+            list.append("Simulate Data", null);
             list.append("Exit",null);
             list.setCommandListener(this);
         }
@@ -163,7 +169,9 @@ public class SVGSimpleMidlet extends MIDlet implements CommandListener {
             else if (__selectedString.equals("See Shuttle Route West")) {
                 route = 2;      //case for West Shuttle Route Highlighted
             }
-            
+            else if (__selectedString.equals("Simulate Data")) {
+               disp.setCurrent(tb2); 
+            }
                 
              else if (__selectedString.equals("Exit")) {
                notifyDestroyed(); //moves to the main screen
