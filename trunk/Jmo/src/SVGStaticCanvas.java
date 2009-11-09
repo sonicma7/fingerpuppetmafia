@@ -1,5 +1,6 @@
 
 import java.io.InputStream;
+import javax.microedition.lcdui.List;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.m2g.SVGImage;
@@ -10,10 +11,13 @@ import org.w3c.dom.svg.SVGSVGElement;
 
 class SVGStaticCanvas extends GameCanvas implements Runnable {
         private SVGImage svgImage = null;
-        double minlong = 77.653118f;
-        double maxlong = 77.659018f;
-        double minlat = 12.8354503f;
-        double maxlat = 12.8401808;
+        double minlong = -73.6598110198974f;
+        double maxlong = -73.6912250518798f;
+        double minlat = 42.7226559718677f;
+        double maxlat = 42.7404566603398f;
+
+        double longvar = 240/(maxlong - minlong);
+        double latvar = 400/(maxlat - minlat);
 
         private ScalableGraphics gc;
         SVGSVGElement myEl = null;
@@ -61,8 +65,8 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
            }
                   
             
-myEl = (SVGSVGElement)(svgImage.getDocument().getDocumentElement());
-myRect = myEl.getBBox();
+            myEl = (SVGSVGElement)(svgImage.getDocument().getDocumentElement());
+            myRect = myEl.getBBox();
            fw=myRect.getWidth();
            fh=myRect.getHeight();      
           
@@ -83,7 +87,33 @@ myRect = myEl.getBBox();
             g.setColor(0x0ffffff);
             g.fillRect(xcord + (int)(globx), ycord + (int)(globy),8,8);
             gc.releaseTarget();
+            
         }
+
+        /*public void updatebus(List buslat, List buslong, Graphics g) {
+            double x;
+            double y;
+
+            gc.bindTarget(g);
+            gc.render(0, 0, svgImage);
+            gc.releaseTarget();
+
+            ListIterator iterlat = buslat.listIterator();
+            ListIterator iterlong = buslat.listIterator();
+            while (iterlat.hasNext() && iterlong.hasNext()) {
+                x = -(iterlong.next() - minlong) * longvar;
+                y = (iterlat.next() - minlat) * latvar + 100;
+                gc.bindTarget(g);
+                g.setColor(0x0000000);
+                g.fillRect((int)x,(int)y,8,8);
+                gc.releaseTarget();
+
+
+            }
+            for (int z = 0; z < buslat.size(); z++) {
+
+            }
+        }*/
 
         
         public void zoomin() {
