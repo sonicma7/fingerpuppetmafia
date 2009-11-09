@@ -12,45 +12,54 @@ import java.util.Enumeration;
 import java.io.*;
 import java.util.Vector;
 
+// This is the main class. It holds the classes for the parser and such.
 public class Parser{
 
-    // URL of Master KML file
+    // URL of shuttle KML file.
     static final String URL = "http://shuttles.rpi.edu/positions/current.kml";
 
     // Shuttle Data
     Vector shuttles = new Vector();
 
-    // String to hold output of parse
+    // String to hold output of parse and display errors.
     StringItem resultItem = new StringItem ("", "");
 
+    // This class reads the XML from the HTTP connection
     class readXML extends Thread{
-        public void run() {
-		try {
-                        System.out.println("Opening Connection...");
 
-		        //Open http connection
+        public void run() {
+
+		try {
+                        //Open http connection
+                        System.out.println("Opening Connection...");
 		        HttpConnection httpConnection = (HttpConnection) Connector.open(URL);
 
-
+                        //Initilialize XML parser
                         System.out.println("Create Parser....");
-			//Initilialize XML parser
 			KXmlParser parser = new KXmlParser();
 
+                        // Read HTTP stream into parser
                         System.out.println("Get From Connection...");
 			parser.setInput(new InputStreamReader(httpConnection.openInputStream()));
 
+                        // Find the correct Tag to start on
                         System.out.println("Read Data...");
                         parser.nextTag();
                         parser.require(XmlPullParser.START_TAG, null, "kml");
                         parser.nextTag();
                         parser.require(XmlPullParser.START_TAG, null, "Document");
 
-
+                        // Begin parsing the Document Tag
                         System.out.println("Start parse...");
+
 			//Iterate through our XML file
                         boolean parsing = (parser.getEventType() != XmlPullParser.END_TAG);
-
 			while (parsing) {
+                            // This checks each tag. If it finds a "Placemark"
+                            // tag, it knows it's a new shuttle and adds it then
+                            // sends the remainder of the data to another function
+                            // to get furthur parsed with the right shuttle
+                            // data.
                             try {
                                 String nodeName = parser.getName();
                                 System.out.println("Name: " + parser.getName());
@@ -68,6 +77,9 @@ public class Parser{
                                 parsing = (parser.getEventType() != XmlPullParser.END_TAG);
                             }
                             catch (Exception e){
+                                // This is required because the XML uses some stupid
+                                // tag like <! Text !>. This confuses the parser.
+                                // You'll see this same workaround below...
                                 System.out.println("Exception: " + e);
                                 parser.nextTag();
                                 if (parsing) {
@@ -76,10 +88,10 @@ public class Parser{
                         }
                 }
                 catch (Exception e) {
-	    	  	e.printStackTrace ();
-	    		resultItem.setLabel ("Error:");
-	    		resultItem.setText (e.toString ());
-
+                    // Catch general errors
+                    e.printStackTrace ();
+                    resultItem.setLabel ("Error:");
+                    resultItem.setText (e.toString ());
 		}
 
                 System.out.println("Parse Complete!");
@@ -88,6 +100,8 @@ public class Parser{
                 for (Enumeration e = shuttles.elements(); e.hasMoreElements();) {
                     Shuttle blah = (Shuttle) e.nextElement();
                     System.out.println(blah.getDescription());
+
+                    // Exepect these to be the same until I actually parse the String
                     System.out.println(blah.getCoordinates()[0]);
                     System.out.println(blah.getCoordinates()[1]);
                 }
@@ -95,13 +109,17 @@ public class Parser{
         }
 
 
+        // Parses the shuttle data
         private Shuttle parseShuttle(KXmlParser parser) throws Exception {
+
             Shuttle bus = new Shuttle();
 
             boolean parsing = (parser.getEventType() != XmlPullParser.END_TAG);
 
             while (parsing) {
                 try {
+                    // Similar to above, but parses what's below the "Placemark"
+                    // tag.
 
                     String nodeName = parser.getName();
                     System.out.println("Sub-Name: " + parser.getName());
@@ -129,6 +147,7 @@ public class Parser{
                 }
             }
 
+            // Send the filled out shuttle object back up to the Vector
             return bus;
         }
 
