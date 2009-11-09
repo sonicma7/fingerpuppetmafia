@@ -22,10 +22,11 @@ public class SVGSimpleMidlet extends MIDlet implements CommandListener {
     Command exit,zoomin,zoomout,cmd1,getstop,getshuttle;
     LocPosition lp;
     SimulateData sd;
+    Parser par;
     TextBox tb1;
     TextBox tb2;
     Display disp;
-    Thread canvThr,lpThr = null, sdThr = null;
+    Thread canvThr,lpThr = null, sdThr = null, parThr = null;
     List list= null;
     public void startApp() {
         disp  = Display.getDisplay(this);
@@ -36,6 +37,7 @@ public class SVGSimpleMidlet extends MIDlet implements CommandListener {
 
     lp = new LocPosition(tb1);
     sd = new SimulateData(tb2);
+    par = new Parser();
 
     tb1.addCommand(cmd1);
     tb1.setCommandListener(this);
@@ -147,6 +149,7 @@ public class SVGSimpleMidlet extends MIDlet implements CommandListener {
             list.append("See Shuttle Route East",null);
             list.append("See Shuttle Route West",null);
             list.append("Simulate Data", null);
+            list.append("Get Data", null);
             list.append("Exit",null);
             list.setCommandListener(this);
         }
@@ -171,6 +174,9 @@ public class SVGSimpleMidlet extends MIDlet implements CommandListener {
             }
             else if (__selectedString.equals("Simulate Data")) {
                disp.setCurrent(tb2); 
+            }
+            else if (__selectedString.equals("Get Data")) {
+                par.go();      //case for Getting Data
             }
                 
              else if (__selectedString.equals("Exit")) {
