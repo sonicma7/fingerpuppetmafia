@@ -1,6 +1,7 @@
 
 import java.io.InputStream;
-import javax.microedition.lcdui.List;
+import java.util.Vector;
+import java.util.Enumeration;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.m2g.SVGImage;
@@ -11,10 +12,10 @@ import org.w3c.dom.svg.SVGSVGElement;
 
 class SVGStaticCanvas extends GameCanvas implements Runnable {
         private SVGImage svgImage = null;
-        double minlong = -73.6598110198974f;
-        double maxlong = -73.6912250518798f;
-        double minlat = 42.7226559718677f;
-        double maxlat = 42.7404566603398f;
+        double minlong = -73.66212844848633f;
+        double maxlong = -73.69083881378174f;
+        double minlat = 42.72207861996528f;
+        double maxlat = 42.73913286689956f;
 
         double longvar = 240/(maxlong - minlong);
         double latvar = 400/(maxlat - minlat);
@@ -90,30 +91,25 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
             
         }
 
-        /*public void updatebus(List buslat, List buslong, Graphics g) {
+        public void updatebus(Vector shuttles, Graphics g) {
             double x;
             double y;
+            Shuttle s1;
 
             gc.bindTarget(g);
             gc.render(0, 0, svgImage);
             gc.releaseTarget();
 
-            ListIterator iterlat = buslat.listIterator();
-            ListIterator iterlong = buslat.listIterator();
-            while (iterlat.hasNext() && iterlong.hasNext()) {
-                x = -(iterlong.next() - minlong) * longvar;
-                y = (iterlat.next() - minlat) * latvar + 100;
+            for (int q = 0; q < shuttles.size(); q++){
+                x = - (((Shuttle)(shuttles.elementAt(q))).getCoordinates()[0] - minlong) * longvar;
+                y = (((Shuttle)(shuttles.elementAt(q))).getCoordinates()[1] - minlat) * latvar + 100;
                 gc.bindTarget(g);
                 g.setColor(0x0000000);
                 g.fillRect((int)x,(int)y,8,8);
                 gc.releaseTarget();
-
-
             }
-            for (int z = 0; z < buslat.size(); z++) {
 
-            }
-        }*/
+        }
 
         
         public void zoomin() {
@@ -194,14 +190,14 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
      void calc(double lat, double longit)
      {   
          
-         double z = ( (lat - minlat)/(maxlat -minlat))*320;
+         double z = ( (lat - minlat)/(maxlat -minlat))*400;
          double r = ((longit - minlong)/(maxlong - minlong))*240;
          
          if (z < 0)  z = 0;
-         if (z > 320.0) z = 320.0;
+         if (z > 400.0) z = 400.0;
          if (r <0) r = 0;
          if (r > 240.0) r = 240.0;
-         z = myEl.getCurrentScale()*(z -160) + 160;
+         z = myEl.getCurrentScale()*(z -200) + 200;
          r  = myEl.getCurrentScale()*(r - 120) + 120;
          xcord = (int) z;
          ycord = (int) r;
