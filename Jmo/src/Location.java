@@ -9,16 +9,20 @@
  */
 public class Location {
 
-    private double latitude;
-    private double longitude;
+    protected double latitude;
+    protected double longitude;
+
+    protected boolean isStop;
 
     public Location() {
         this.latitude = this.longitude = 0;
+        isStop = false;
     }
 
     public Location(double lat, double lon) {
         this.latitude = lat;
         this.longitude = lon;
+        isStop = false;
     }
 
     public double getLatitude() {
