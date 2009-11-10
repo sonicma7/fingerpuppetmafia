@@ -31,36 +31,31 @@ public class SVGSimpleMidlet extends MIDlet implements CommandListener {
     public void startApp() {
         disp  = Display.getDisplay(this);
         //svgCanvas = getCanvas();
-         cmd1 = new Command("Back",Command.BACK, 0);
-    tb1 = new TextBox(" "," ",150, TextField.ANY );
-    tb2 = new TextBox(" "," ", 150, TextField.ANY );
+        cmd1 = new Command("Back",Command.BACK, 0);
+        tb1 = new TextBox(" "," ",150, TextField.ANY );
+        tb2 = new TextBox(" "," ", 150, TextField.ANY );
 
-    lp = new LocPosition(tb1);
-    sd = new SimulateData(tb2);
-    par = new Parser();
+        lp = new LocPosition(tb1);
+        sd = new SimulateData(tb2);
+        par = new Parser();
 
-    tb1.addCommand(cmd1);
-    tb1.setCommandListener(this);
-    tb2.addCommand(cmd1);
-    tb2.setCommandListener(this);
+        tb1.addCommand(cmd1);
+        tb1.setCommandListener(this);
+        tb2.addCommand(cmd1);
+        tb2.setCommandListener(this);
 
-    lpThr = new Thread(lp);
-    sdThr = new Thread(sd);
+        lpThr = new Thread(lp);
+        sdThr = new Thread(sd);
 
-    try {
-        lpThr.start();
-        sdThr.start();
-    }  catch ( Exception e2) {
-        e2.printStackTrace();
-    }
-   // canvThr = new Thread(svgCanvas);
-  // canvThr.start();
+        try {
+            lpThr.start();
+            sdThr.start();
+        }
+        catch ( Exception e2) {
+            e2.printStackTrace();
+        }
+
         disp.setCurrent(getList());
-
-        //disp.setCurrent(svgCanvas);
-
-    
-    
     }
 
     public void pauseApp() {
@@ -78,19 +73,15 @@ public class SVGSimpleMidlet extends MIDlet implements CommandListener {
                 listAction();
             }
         }
-
     }
 
     /*getCanvas sets up the canvas to have a menu in the lower right hand
      * corner that has the following options: zoom in/out, exit, find closest shuttle
      * stop, find closest shuttle
      */
-
-      public SVGStaticCanvas getCanvas(int canv)
-      {
-         if (svgCanvas == null){
+    public SVGStaticCanvas getCanvas(int canv){
+        if (svgCanvas == null){
             svgCanvas = new SVGStaticCanvas(true, lp, canv);
-        
             exit = new Command("Exit", Command.SCREEN, 0);
             zoomin = new Command("Zoom in", Command.SCREEN, 1);
             zoomout = new Command("Zoom out", Command.SCREEN, 1);
@@ -102,45 +93,36 @@ public class SVGSimpleMidlet extends MIDlet implements CommandListener {
             svgCanvas.addCommand(getstop);
             svgCanvas.addCommand(getshuttle);
             svgCanvas.setCommandListener(new CommandListener() {
-
- /* CommandAction listens for menu options once in the campus map, such as
-  * zoom in, zoom out, find closest shuttle stop and find closest shuttle.  
-  */
+                /* CommandAction listens for menu options once in the campus map, such as
+                * zoom in, zoom out, find closest shuttle stop and find closest shuttle.
+                */
                 public void commandAction(Command c, Displayable d) {
-                  if(c == exit) {
-                      canvThr = null;
-                      svgCanvas = null;
-
-                     disp.setCurrent( getList());
-                  }  else {
-                      if(c == zoomin) {
-                          svgCanvas.zoomin();
-                      } else {
-                          if(c== zoomout) {
-                         svgCanvas.zoomout();
-                          } else {
-                              if(c== getstop){
-                              } else {
-                                  if(c== getshuttle){
-                                  }
-
-                                }
-
-                            }
-                          }
+                    if(c == exit) {
+                        canvThr = null;
+                        svgCanvas = null;
+                        disp.setCurrent( getList());
+                    }
+                    else if(c == zoomin) {
+                            svgCanvas.zoomin();
                         }
-                 }
+                    else if(c== zoomout) {
+                                svgCanvas.zoomout();
+                    }
+                    else if(c== getstop){
+                    }
+                    else if(c== getshuttle){
+                    }
+                }
             });
-
-          }
+        }
         return svgCanvas;
     }
-/*
- * getList is responsible for creating a new list of all available commands for user
- * Will include See Campus, Get Nearest Bus Stop, Exit, Find Nearest Bus, etc. 
- */
 
-       public List getList() {
+    /*
+     * getList is responsible for creating a new list of all available commands for user
+     * Will include See Campus, Get Nearest Bus Stop, Exit, Find Nearest Bus, etc.
+    */
+    public List getList() {
         if (list == null) {
             // write pre-init user code here
             list = new List("list", Choice.IMPLICIT);
@@ -155,15 +137,15 @@ public class SVGSimpleMidlet extends MIDlet implements CommandListener {
         }
         return list;
     }
-       void listAction()
-       {String __selectedString = getList().getString(getList().getSelectedIndex());
+    
+    void listAction(){
+        String __selectedString = getList().getString(getList().getSelectedIndex());
         int route = 0;      //used to determine what route is selected
         if (__selectedString != null) {
             if (__selectedString.equals("Get Location")) {
-               disp.setCurrent(tb1); 
-                //switchDisplayable(null, getForm());
-                // write post-action user code here
-            } else if (__selectedString.equals("See Campus")) {
+                disp.setCurrent(tb1);
+            }
+            else if (__selectedString.equals("See Campus")) {
                 route = 3;      //case for empty map
             }
             else if (__selectedString.equals("See Shuttle Route East")) {
@@ -173,18 +155,17 @@ public class SVGSimpleMidlet extends MIDlet implements CommandListener {
                 route = 2;      //case for West Shuttle Route Highlighted
             }
             else if (__selectedString.equals("Simulate Data")) {
-               disp.setCurrent(tb2); 
+                disp.setCurrent(tb2);
             }
             else if (__selectedString.equals("Get Data")) {
                 par.go();      //case for Getting Data
             }
                 
-             else if (__selectedString.equals("Exit")) {
-               notifyDestroyed(); //moves to the main screen
-               
+            else if (__selectedString.equals("Exit")) {
+                notifyDestroyed(); //moves to the main screen
             }
         }
-        /* if there is a change in route from when it was created, display new canvas */
+        // if there is a change in route from when it was created, display new canvas
         if (route != 0){
             svgCanvas = null;
             svgCanvas = getCanvas(route);
@@ -192,7 +173,5 @@ public class SVGSimpleMidlet extends MIDlet implements CommandListener {
             canvThr.start();
             disp.setCurrent(svgCanvas);
         }
-       }
+    }
 }
-
-
