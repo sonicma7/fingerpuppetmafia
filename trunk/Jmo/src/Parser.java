@@ -16,7 +16,10 @@ import java.util.Vector;
 public class Parser{
 
     // URL of shuttle KML file.
-    static final String URL = "http://shuttles.rpi.edu/positions/current.kml";
+    //static final String URL = "http://shuttles.rpi.edu/positions/current.kml";
+
+    // temp
+    static final String URL = "http://dl.dropbox.com/u/2923833/current.kml";
 
     // Shuttle Data
     Vector shuttles = new Vector();
@@ -40,7 +43,12 @@ public class Parser{
 
                         // Read HTTP stream into parser
                         System.out.println("Get From Connection...");
-			parser.setInput(new InputStreamReader(httpConnection.openInputStream()));
+                        try {
+			   parser.setInput(new InputStreamReader(httpConnection.openInputStream()));
+                        }
+                        catch (Exception e) {
+                            System.out.println("WTF: " + e);
+                        }
 
                         // Find the correct Tag to start on
                         System.out.println("Read Data...");
@@ -66,10 +74,16 @@ public class Parser{
 
                                 if (nodeName.compareTo("Placemark") == 0) {
                                     System.out.println("Shuttle found. Adding...");
+                                    parser.require(XmlPullParser.START_TAG, null, "Placemark");
                                     shuttles.addElement(parseShuttle(parser));
                                     parser.nextTag();
-                                    System.out.println("Shuttle add complete!");
+                                    parser.nextTag();
+                                    parser.nextTag();
+                                    parser.nextTag();
+                                    System.out.println("Name: " + parser.getName());
 
+                                    //parser.require(XmlPullParser.END_TAG, null, "Placemark");
+                                    System.out.println("Shuttle add complete!");
                                 }
                                 else {
                                     parser.nextTag();
@@ -120,6 +134,7 @@ public class Parser{
                 try {
                     // Similar to above, but parses what's below the "Placemark"
                     // tag.
+                    
 
                     String nodeName = parser.getName();
                     System.out.println("Sub-Name: " + parser.getName());
@@ -132,6 +147,7 @@ public class Parser{
                         // Parse the string into 2 ints. Ignore 3rd arg
                         parser.nextText();
                         bus.setCoordinates(2.0,2.0);
+                        parser.nextTag();
                         parser.nextTag();
                     }
                     else {
