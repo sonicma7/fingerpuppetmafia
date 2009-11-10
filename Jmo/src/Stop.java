@@ -7,7 +7,7 @@
  *
  * @author wackss
  */
-public class Stop extends Location {
+public class Stop extends Position {
 
     private String name;
     

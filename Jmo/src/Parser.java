@@ -4,7 +4,6 @@ import org.xmlpull.v1.*;
 
 // JME Imports
 import javax.microedition.io.*;
-import javax.microedition.midlet.*;
 import javax.microedition.lcdui.*;
 import java.util.Enumeration;
 
