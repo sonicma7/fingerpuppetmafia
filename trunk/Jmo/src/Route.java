@@ -54,7 +54,7 @@ public class Route {
         timeList.setElementAt(new Integer(time), index);
     }
 
-    public boolean isBetweenLocations(Location test, Location loc1, Location loc2, double err) {
+    public boolean isBetweenLocations(Position test, Position loc1, Position loc2, double err) {
         //get the vector along the direction of the route
         double vectorLongX = loc2.getLatitude() - loc1.getLatitude();
         double vectorLongY = loc2.getLongitude() - loc1.getLongitude();

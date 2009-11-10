@@ -8,19 +8,19 @@
  *
  * @author wackss
  */
-public class Location {
+public class Position {
 
     protected double latitude;
     protected double longitude;
 
     protected boolean isStop;
 
-    public Location() {
+    public Position() {
         this.latitude = this.longitude = 0;
         isStop = false;
     }
 
-    public Location(double lat, double lon) {
+    public Position(double lat, double lon) {
         this.latitude = lat;
         this.longitude = lon;
         isStop = false;
@@ -42,7 +42,7 @@ public class Location {
         this.longitude = longitude;
     }
 
-    public double getDistanceTo(Location other) {
+    public double getDistanceTo(Position other) {
         double xdist = (other.getLatitude() - this.latitude);
         double ydist = (other.getLongitude() - this.longitude);
 

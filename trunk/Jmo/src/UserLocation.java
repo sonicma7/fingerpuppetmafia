@@ -7,7 +7,7 @@
  *
  * @author wackss
  */
-public class UserLocation extends Location {
+public class UserLocation extends Position {
 
     public Stop getClosestStop(Route route) {
         double minDist = 9999;
