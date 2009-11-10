@@ -22,13 +22,12 @@ public class SimulateData implements Runnable{
     int found1 = 0, found2 = 0;
 
     public void SimulateData() {
-
     }
+    
     SimulateData(TextBox t1){
         smb1 = t1;
         sb = new StringBuffer("");
         smb1.setString("Simulating data...");
-
     }
 
     public void run(){
@@ -99,16 +98,4 @@ public class SimulateData implements Runnable{
             }catch (Exception e){};
         }
     }
-
-    public void commandAction(Command c, Displayable d) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-
-
-
-
-
-
-
 }

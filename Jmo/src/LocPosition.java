@@ -20,22 +20,21 @@ public class LocPosition implements Runnable, LocationListener {
 
     public void LocPosition() {
     }
+    
     LocPosition(TextBox t1) {
-        ltb1=t1;
+        ltb1 = t1;
         sb = new StringBuffer("");
         ltb1.setString("In Loc Position");
         try {
             Criteria crit = new Criteria();
             crit.setCostAllowed(true); //default value
-     
             crit.setPreferredPowerConsumption(Criteria.NO_REQUIREMENT);
             provider = LocationProvider.getInstance(crit);
-        } catch (LocationException ex) {
+        }
+        catch (LocationException ex) {
             ex.printStackTrace();
         }
         provider.setLocationListener(this,-1,-1,-1);
-       //
-     //getLocInstance();
     }
     
 
@@ -45,34 +44,32 @@ public class LocPosition implements Runnable, LocationListener {
                 ltb1.setString("Lat: " + Double.toString(latitude) + '\n' + "Long:" 
                         + Double.toString(longitude)+ '\n' + "Time:" + ss1);
                  
-                try{
+                try {
                     Thread.sleep(50);
-                }catch(Exception e){};
+                }
+                catch(Exception e){};
 
+        }
     }
-}
     
-    public void locationUpdated(LocationProvider provider, Location locPos) {
-        
+    public void locationUpdated(LocationProvider provider, Location locPos) {    
         coordinates = locPos.getQualifiedCoordinates();
         sb.delete(0,sb.length());
         sb.append(new Date(locPos.getTimestamp()).toString());
         latitude = coordinates.getLatitude();
         longitude = coordinates.getLongitude();
-
     }
 
     public void providerStateChanged(LocationProvider provider2, int arg1) {
-       
-
     }
+    
     public double getLatitude(){
         return latitude;
     }
+    
     public double getLongitude(){
         return longitude;
     }
-
 }
 
 
