@@ -113,8 +113,9 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
             double y;
             //loops through shuttles, takes zoom into account
             for (int q = 0; q < shuttles.size(); q++){
-                 x = (((Shuttle)(shuttles.elementAt(q))).getCoordinates()[0] - minlong) * longvar + xoffset;
-                 y = (((Shuttle)(shuttles.elementAt(q))).getCoordinates()[1] - minlat) * latvar + yoffset + 100;
+                x = (((Shuttle)(shuttles.elementAt(q))).getCoordinates().getLongitude() - minlong) * longvar + xoffset;
+                y = (((Shuttle)(shuttles.elementAt(q))).getCoordinates().getLatitude() - minlat) * latvar + 100 - yoffset;
+
                 //displays the shuttles as a rectangle
                 gc.bindTarget(g);
                 g.setColor(0x0000000);
@@ -179,6 +180,7 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
      * the new data as well as when to display the shuttles, also repaints
      */
     public void run() {
+
         while( true ) {
             //set up key states, current position and check for key presses
             int keyState = getKeyStates();

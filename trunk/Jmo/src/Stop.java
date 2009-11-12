@@ -18,7 +18,7 @@ public class Stop extends Position {
 
     public Stop(double lat, double lon) {
         super(lat, lon);
-        isStop = false;
+        isStop = true;
     }
 
     public String getName() {
