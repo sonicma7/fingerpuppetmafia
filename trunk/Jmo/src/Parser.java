@@ -30,6 +30,9 @@ public class Parser{
     class readXML extends Thread{
         public void run() {
             try {
+                // Clear Vector List
+                shuttles = new Vector();
+
                 //Open http connection
 		HttpConnection httpConnection = (HttpConnection) Connector.open(URL);
 
@@ -95,6 +98,8 @@ public class Parser{
             }
 
             // Lets check out the data we gathered...
+            // This is for debugging...
+            /*
             for (Enumeration e = shuttles.elements(); e.hasMoreElements();) {
                 Shuttle blah = (Shuttle) e.nextElement();
                 System.out.println(blah.getDescription());
@@ -104,6 +109,7 @@ public class Parser{
                 System.out.println(blah.getCoordinates().getLatitude());
             }
             System.out.println("All objects printed!");
+             */
         }
 
         // Parses the shuttle data
