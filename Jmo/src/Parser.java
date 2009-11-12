@@ -164,8 +164,8 @@ public class Parser{
                             double coord1 = Double.parseDouble(stack1);
                             double coord2 = Double.parseDouble(stack2);
                             Position p = new Position();
-                            p.setLatitude(coord1);
-                            p.setLongitude(coord2);
+                            p.setLatitude(coord2);
+                            p.setLongitude(coord1);
                             bus.setCoordiantes(p);
                         }
                         catch (Exception e) {
