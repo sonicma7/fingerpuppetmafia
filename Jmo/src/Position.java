@@ -26,6 +26,10 @@ public class Position {
         isStop = false;
     }
 
+    public boolean isStop() {
+        return isStop;
+    }
+
     public double getLatitude() {
         return latitude;
     }

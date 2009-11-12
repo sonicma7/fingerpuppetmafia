@@ -11,20 +11,20 @@ import java.util.Vector;
  */
 public class Route {
 
-    private Vector locaList;
+    private Vector posiList;
     private Vector timeList;
 
     public Route() {
-        locaList = new Vector();
+        posiList = new Vector();
         timeList = new Vector();
     }
 
     public Vector getStopList() {
-        return locaList;
+        return posiList;
     }
 
-    public void setStopList(Vector locaList) {
-        this.locaList = locaList;
+    public void setStopList(Vector posiList) {
+        this.posiList = posiList;
     }
 
     public Vector getTimeList() {
@@ -35,61 +35,58 @@ public class Route {
         this.timeList = timeList;
     }
 
-    public void addStop(Stop st, int time) {
-        locaList.addElement(st);
-        timeList.addElement(new Integer(time));
+    public void addPosition(Position st, double time) {
+        posiList.addElement(st);
+        timeList.addElement(new Double(time));
     }
 
-    public void addStopAtIndex(Stop st, int time, int index) {
-        locaList.insertElementAt(st, index);
-        timeList.insertElementAt(new Integer(time), index);
+    public void addPositionAtIndex(Position st, double time, int index) {
+        posiList.insertElementAt(st, index);
+        timeList.insertElementAt(new Double(time), index);
     }
 
-    public void removeStop(int index) {
-        locaList.removeElementAt(index);
+    public void removePosition(int index) {
+        posiList.removeElementAt(index);
         timeList.removeElementAt(index);
     }
     
-    public void setStopTime(int index, int time) {
-        timeList.setElementAt(new Integer(time), index);
+    public void setStopTime(int index, double time) {
+        timeList.setElementAt(new Double(time), index);
     }
 
-    public boolean isBetweenLocations(Position test, Position loc1, Position loc2, double err) {
+    public double isBetweenPositions(Position test, Position loc1, Position loc2, double err) {
         //get the vector along the direction of the route
         double vectorLongX = loc2.getLatitude() - loc1.getLatitude();
         double vectorLongY = loc2.getLongitude() - loc1.getLongitude();
 
-        //get the vector perpendicular (this vector will define the width of the road)
-        double vectorShortX = vectorLongY * -1;
-        double vectorShortY = vectorLongX;
+        //get the vector from location 1 to the test point
+        double vectorPointX = test.getLatitude() - loc1.getLatitude();
+        double vectorPointY = test.getLongitude() - loc1.getLongitude();
 
-        //make vectorShort's magnitude equal to err*2
-        double mag = Math.sqrt(vectorShortX*vectorShortX + vectorShortY*vectorShortY);
-        vectorShortX = vectorShortX / mag * err * 2;
-        vectorShortY = vectorShortY / mag * err * 2;
-
-        //calculate the origin of our rectangle/coord system
-        double originX = loc1.getLatitude();
-        double originY = loc1.getLongitude();
-        originX = originX - vectorShortX/2;
-        originY = originY - vectorShortY/2;
-
-        //get the vector from the origin to the test point
-        double vectorPointX = test.getLatitude() - originX;
-        double vectorPointY = test.getLongitude() - originY;
-
-        //now do the test
-        //vectorPoint must be in the same direction as both vectorShort & vectorLong
-        double pointDotShort = vectorPointX*vectorShortX + vectorPointY*vectorShortY;
         double pointDotLong = vectorPointX*vectorLongX + vectorPointY*vectorLongY;
-        double shortDotShort = vectorShortX*vectorShortX + vectorShortY*vectorShortY;
         double longDotLong = vectorLongX*vectorLongX + vectorLongY*vectorLongY;
 
-        if ((0 <= pointDotShort) && (pointDotShort <= shortDotShort) &&
-                (0 <= pointDotLong) && (pointDotLong <= longDotLong))
-            return true;
+        //now just need to make sure it's close enough
+        double t = pointDotLong / longDotLong;
+	if (t < 0.0)
+            t = 0.0;
+        if (t > 1.0)
+            t = 1.0;
+
+	double closestX = loc1.getLatitude() + t*vectorLongX;
+	double closestY = loc1.getLongitude() + t*vectorLongY;
+
+	double dx = test.getLatitude() - closestX;
+	double dy = test.getLongitude() - closestY;
+
+	//d.x /=2;
+        double dist_sqr = dx*dx + dy*dy;
+        //return dist_sqr <= (circle_radius * circle_radius);
+
+        if ((0 <= pointDotLong) && (pointDotLong <= longDotLong) && (dist_sqr <= err*err))
+            return (pointDotLong/longDotLong);
         else
-            return false;
+            return -1;
     }
 
 }
