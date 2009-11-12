@@ -7,6 +7,9 @@
 import java.util.Date;
 import javax.microedition.lcdui.TextBox;
 import javax.microedition.location.*;
+
+/*LocPosition sets up locations for a person in terms of longitude and latitude
+ */
 public class LocPosition implements Runnable, LocationListener {
     Location locPos;
     StringBuffer sb = null;
@@ -17,7 +20,9 @@ public class LocPosition implements Runnable, LocationListener {
     TextBox ltb1;
     Coordinates coordinates = null;
 
-
+/*Default constructor for LocPosition, sets up Location Position listener,
+ * buffer along with criteria
+ */
     public void LocPosition() {
     }
     
@@ -37,7 +42,9 @@ public class LocPosition implements Runnable, LocationListener {
         provider.setLocationListener(this,-1,-1,-1);
     }
     
-
+/* Sets up thread to continuously output and update current gps locations
+ * works every 50ms
+ */
     public void run() {
         while( true ) {
                 String ss1 = new String(sb);
@@ -51,7 +58,9 @@ public class LocPosition implements Runnable, LocationListener {
 
         }
     }
-    
+    /*locationUpdated takes in a provider and a location, gets new locations and
+     * updates the current time
+     */
     public void locationUpdated(LocationProvider provider, Location locPos) {    
         coordinates = locPos.getQualifiedCoordinates();
         sb.delete(0,sb.length());
@@ -62,11 +71,14 @@ public class LocPosition implements Runnable, LocationListener {
 
     public void providerStateChanged(LocationProvider provider2, int arg1) {
     }
-    
+    /*getLatitude returns the current latitude
+     */
     public double getLatitude(){
         return latitude;
     }
-    
+
+    /*getLongitude returns the current longitude
+     */
     public double getLongitude(){
         return longitude;
     }

@@ -140,7 +140,7 @@ public class Parser{
                     else if(nodeName.compareTo("coordinates") == 0) {
                         // Parse the string into 2 ints. Ignore 3rd arg
                         parser.nextText();
-                        bus.setCoordinates(2.0,2.0);
+                        bus.setCoordinates(-73.67,42.728);
                         parser.nextTag();
                         parser.nextTag();
                     }
@@ -164,4 +164,10 @@ public class Parser{
     public void go(){
         new readXML().start();
     }
+
+    public Vector getShuttles() {
+        return shuttles;
+    }
+
+
 }
