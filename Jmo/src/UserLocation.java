@@ -3,6 +3,8 @@
  * and open the template in the editor.
  */
 
+import java.util.Vector;
+
 /**
  *
  * @author wackss
@@ -35,6 +37,22 @@ public class UserLocation extends Position {
         }
 
         return closestStopIndex;
+    }
+
+    public Shuttle getClosestShuttle(Vector shuttles) {
+        Shuttle closestShuttle = null;
+        double minDist = 9999;
+
+        for (int i=0; i<shuttles.size(); i++) {
+            Shuttle tempShuttle = (Shuttle)(shuttles.elementAt(i));
+            double tempDist = this.getDistanceTo(tempShuttle.getCoordinates());
+            if (tempDist < minDist) {
+                minDist = tempDist;
+                closestShuttle = tempShuttle;
+            }
+        }
+
+        return closestShuttle;
     }
 
     public double getETA(Shuttle shuttle, int stopNum, Route route) {
