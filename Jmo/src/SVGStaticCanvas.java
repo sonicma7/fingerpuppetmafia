@@ -23,7 +23,7 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
     double minlat = 42.72204709206166f;
     double maxlat = 42.73903830914378f;
     double longvar = 240/(maxlong - minlong);
-    double latvar = 310/(maxlat - minlat);
+    double latvar = 210/(maxlat - minlat);
 
 
     //the following variables set up the SVG image and deal with positioning
@@ -113,8 +113,8 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
             double y;
             //loops through shuttles, takes zoom into account
             for (int q = 0; q < shuttles.size(); q++){
-                x = (((Shuttle)(shuttles.elementAt(q))).getCoordinates().getLongitude() - minlong) * longvar + xoffset;
-                y = (((Shuttle)(shuttles.elementAt(q))).getCoordinates().getLatitude() - minlat) * latvar + 100 - yoffset;
+                x = (((Shuttle)(shuttles.elementAt(q))).getCoordinates().getLongitude() - minlong) * longvar + (int)xoffset;
+                y = (((Shuttle)(shuttles.elementAt(q))).getCoordinates().getLatitude() - minlat) * latvar + 100 + (int)yoffset;
 
                 //displays the shuttles as a rectangle
                 gc.bindTarget(g);
@@ -222,7 +222,7 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
                     myparse.go();
                 }
                 //this is so we do not get new data every 50ms
-                else if (counter < 500 ){
+                else if (counter < 200 ){
                     counter++;
                 }
                 //after 25000ms, evaluate the shuttles and display them
