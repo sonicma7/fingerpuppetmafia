@@ -1,26 +1,30 @@
 // Placeholder
 public class Shuttle {
-    private double coordinates[] = new double[2];
+    private Position position;
     private String description;
 
     public Shuttle() {
-        coordinates[0] = -1;
-        coordinates[1] = -1;
-
-        description = "Bus";
+        position = new Position();
+        position.setLongitude(0.0);
+        position.setLatitude(0.0);
+        description = " A Bus";
     }
 
     public void setCoordinates(double longitude, double latitude){
-        coordinates[0] = longitude;
-        coordinates[1] = latitude;
+        position.setLongitude(longitude);
+        position.setLatitude(latitude);
+    }
+
+    public void setCoordiantes(Position p){
+        position = p;
     }
 
     public void setDescription(String desc) {
         description = desc;
     }
 
-    public double[] getCoordinates() {
-        return coordinates;
+    public Position getCoordinates() {
+        return position;
     }
 
     public String getDescription() {
