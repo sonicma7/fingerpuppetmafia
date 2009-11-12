@@ -17,7 +17,7 @@ public class Parser{
     // URL of shuttle KML file.
     //static final String URL = "http://shuttles.rpi.edu/positions/current.kml";
 
-    // temp
+    // Temp since main site seems down....
     static final String URL = "http://dl.dropbox.com/u/2923833/current.kml";
 
     // Shuttle Data
@@ -31,32 +31,26 @@ public class Parser{
         public void run() {
             try {
                 //Open http connection
-                System.out.println("Opening Connection...");
-		        HttpConnection httpConnection = (HttpConnection) Connector.open(URL);
+		HttpConnection httpConnection = (HttpConnection) Connector.open(URL);
 
                 //Initilialize XML parser
-                System.out.println("Create Parser....");
                 KXmlParser parser = new KXmlParser();
 
                 // Read HTTP stream into parser
-                System.out.println("Get From Connection...");
                 try {
                     parser.setInput(new InputStreamReader(httpConnection.openInputStream()));
                 }
                 catch (Exception e) {
-                    System.out.println("WTF: " + e);
+                    System.out.println("HTTP Error: " + e);
                 }
 
                 // Find the correct Tag to start on
-                System.out.println("Read Data...");
                 parser.nextTag();
                 parser.require(XmlPullParser.START_TAG, null, "kml");
                 parser.nextTag();
                 parser.require(XmlPullParser.START_TAG, null, "Document");
 
                 // Begin parsing the Document Tag
-                System.out.println("Start parse...");
-
                 //Iterate through our XML file
                 boolean parsing = (parser.getEventType() != XmlPullParser.END_TAG);
                 while (parsing) {
@@ -67,20 +61,14 @@ public class Parser{
                      * data. */
                     try {
                         String nodeName = parser.getName();
-                        System.out.println("Name: " + parser.getName());
 
                         if (nodeName.compareTo("Placemark") == 0) {
-                            System.out.println("Shuttle found. Adding...");
                             parser.require(XmlPullParser.START_TAG, null, "Placemark");
                             shuttles.addElement(parseShuttle(parser));
                             parser.nextTag();
                             parser.nextTag();
                             parser.nextTag();
                             parser.nextTag();
-                            System.out.println("Name: " + parser.getName());
-
-                            //parser.require(XmlPullParser.END_TAG, null, "Placemark");
-                            System.out.println("Shuttle add complete!");
                         }
                         else {
                             parser.nextTag();
@@ -92,7 +80,7 @@ public class Parser{
                         /* This is required because the XML uses some stupid
                          * tag like <! Text !>. This confuses the parser.
                          * You'll see this same workaround below... */
-                        System.out.println("Exception: " + e);
+                        System.out.println("Parse Exception: " + e);
                         parser.nextTag();
                         if (parsing) {
                         }
@@ -106,16 +94,14 @@ public class Parser{
                 resultItem.setText (e.toString ());
             }
 
-            System.out.println("Parse Complete!");
-
             // Lets check out the data we gathered...
             for (Enumeration e = shuttles.elements(); e.hasMoreElements();) {
                 Shuttle blah = (Shuttle) e.nextElement();
                 System.out.println(blah.getDescription());
 
                 // Exepect these to be the same until I actually parse the String
-                System.out.println(blah.getCoordinates()[0]);
-                System.out.println(blah.getCoordinates()[1]);
+                System.out.println(blah.getCoordinates().getLongitude());
+                System.out.println(blah.getCoordinates().getLatitude());
             }
             System.out.println("All objects printed!");
         }
@@ -131,18 +117,53 @@ public class Parser{
                     // Similar to above, but parses what's below the "Placemark"
                     // tag.
                     String nodeName = parser.getName();
-                    System.out.println("Sub-Name: " + parser.getName());
 
                     if(nodeName.compareTo("name") == 0) {
                         bus.setDescription(parser.nextText());
                         parser.nextTag();
                     }
                     else if(nodeName.compareTo("coordinates") == 0) {
-                        // Parse the string into 2 ints. Ignore 3rd arg
-                        parser.nextText();
-                        bus.setCoordinates(-73.67,42.728);
-                        parser.nextTag();
-                        parser.nextTag();
+
+                        try {
+                            // Parse the string into 2 doubles. Ignore 3rd arg (altitude)
+                            String coor = parser.nextText();
+                            parser.nextTag();
+                            parser.nextTag();
+
+                            // Convert the string data to numbers
+                            String stack1 = "";
+                            String stack2 = "";
+                            int currentnum = 1;
+                            for (int x = 0; x < coor.length(); x++){
+                                if (coor.substring(x,x+1).equals(",")) {
+                                    if (currentnum == 1){
+                                        currentnum = 2;
+                                    }
+                                    else {
+                                        x = coor.length();
+                                    }
+                                }
+                                else {
+                                    if (currentnum == 1) {
+                                        stack1 = stack1 + coor.substring(x,x+1);
+                                    }
+                                    else if (currentnum == 2) {
+                                        stack2 = stack2 + coor.substring(x,x+1);
+                                    }
+                                    else {
+                                        x = coor.length();
+                                    }
+                                }
+                            }
+                            double coord1 = Double.parseDouble(stack1);
+                            double coord2 = Double.parseDouble(stack2);
+                            bus.setCoordinates(coord1,coord2);
+                        }
+                        catch (Exception e) {
+                            // Something happending during the parse
+                            System.out.println("Error during coordinate parse: " + e);
+                            bus.setCoordinates(0.0, 0.0);
+                        }
                     }
                     else {
                         parser.nextTag();
