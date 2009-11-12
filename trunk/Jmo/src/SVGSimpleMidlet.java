@@ -184,6 +184,7 @@ public class SVGSimpleMidlet extends MIDlet implements CommandListener {
             }
                 
             else if (__selectedString.equals("Exit")) {
+                svgCanvas = null;
                 notifyDestroyed(); //moves to the main screen
             }
         }

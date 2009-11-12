@@ -23,7 +23,8 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
     double minlat = 42.72204709206166f;
     double maxlat = 42.73903830914378f;
     double longvar = 240/(maxlong - minlong);
-    double latvar = 450/(maxlat - minlat);
+    double latvar = 310/(maxlat - minlat);
+
 
     //the following variables set up the SVG image and deal with positioning
     private ScalableGraphics gc;
@@ -31,7 +32,6 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
     SVGPoint p1;
     SVGRect myRect;
     float f1,fw,fh,fz;
-    float globx=0, globy=0;
     int xcord=0, ycord=0;
     LocPosition mylp;
     float xoffset = 0, yoffset = 0;
@@ -99,9 +99,11 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
         gc.bindTarget(g);
         g.setColor(0x00ff5050);        
         gc.render(0, 0, svgImage);
-        g.setColor(0x0ffffff);
-        //Currently a person is a square
-        g.fillRect(xcord + (int)(globx), ycord + (int)(globy),8,8);
+        g.setColor(0x0000000);
+        //Currently a person is an x that is boxed in
+        g.drawLine(xcord + (int)(xoffset) - 4, ycord + (int)(yoffset) - 4, xcord + (int)(xoffset) + 4, ycord + (int)(yoffset) + 4);
+        g.drawLine(xcord + (int)(xoffset) - 4, ycord + (int)(yoffset) + 4, xcord + (int)(xoffset) + 4, ycord + (int)(yoffset) - 4);
+        g.drawRect(xcord + (int)(xoffset) - 4, ycord + (int)(yoffset) - 4,8,8);
         gc.releaseTarget();
 
         //as long as we have data for the shuttles, try and get them
@@ -112,8 +114,7 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
             //loops through shuttles, takes zoom into account
             for (int q = 0; q < shuttles.size(); q++){
                  x = (((Shuttle)(shuttles.elementAt(q))).getCoordinates()[0] - minlong) * longvar + xoffset;
-                 y = (((Shuttle)(shuttles.elementAt(q))).getCoordinates()[1] - minlat) * latvar + 100 - yoffset;
-
+                 y = (((Shuttle)(shuttles.elementAt(q))).getCoordinates()[1] - minlat) * latvar + yoffset + 100;
                 //displays the shuttles as a rectangle
                 gc.bindTarget(g);
                 g.setColor(0x0000000);
@@ -141,11 +142,11 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
         //update new coordinates
         float transx = fx - (fw/2)*fz;
         float transy =  fy - (fh/2)*fz ;
-        p1.setX( transx);
+        p1.setX(transx);
         p1.setY(transy);
         //update bus coordinates
-        xoffset -= (fw/4.5)*fz;
-        yoffset -= (fw/7)*fz;
+        xoffset -= (fw/2)*fz;
+        yoffset -= (fw/2)*fz;
         repaint();
     }
 
@@ -168,8 +169,8 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
         p1.setX( transx);
         p1.setY(transy);
         //update bus coordinates
-        xoffset += (fw/4.5)*fz;
-        yoffset += (fw/7)*fz;
+        xoffset += (fw/2)*fz;
+        yoffset += (fw/2)*fz;
         repaint();
     }
 
@@ -189,25 +190,21 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
             if ((keyState & LEFT_PRESSED) != 0) {
                 p1.setX(fx + 10);
                 xoffset += 10;
-                globx+= 10;
                 keyState = 0;
             }
             if ((keyState & RIGHT_PRESSED) != 0) {
                 p1.setX(fx - 10);
                 xoffset -= 10;
-                globx-=10;
                 keyState=0;
             }
             if ((keyState & UP_PRESSED) != 0) {
                 p1.setY(fy + 10);
-                yoffset -= 10;
-                globy-=10;
+                yoffset += 10;
                 keyState=0;
             }
             if ((keyState & DOWN_PRESSED) != 0) {
                 p1.setY(fy - 10);
-                yoffset += 10;
-                globy+=10;
+                yoffset -= 10;
                 keyState=0;
             }
             //get latitude and longitude and calculate coordinate
@@ -246,21 +243,10 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
      * with regard to the SVG image in pixels
      */
     void calc(double lat, double longit){   
-        double z = ( (lat - minlat)/(maxlat -minlat))*450;
-        double r = ((longit - minlong)/(maxlong - minlong))*240;
-
+        double z = (42.72204709206166 - minlat) * latvar + 100;
+        double r = (-73.66281509399414 - minlong) * longvar;
         //check to see if we are in bounds
-        if (z < 0)
-            z = 0;
-        if (z > 450.0)
-            z = 450.0;
-         if (r <0)
-             r = 0;
-         if (r > 240.0)
-             r = 240.0;
-         z = myEl.getCurrentScale()*(z -225) + 225;
-         r  = myEl.getCurrentScale()*(r - 120) + 120;
-         xcord = (int) z;
-         ycord = (int) r + 100;
+         ycord = (int) z;
+         xcord = (int) r;
      }
 }
