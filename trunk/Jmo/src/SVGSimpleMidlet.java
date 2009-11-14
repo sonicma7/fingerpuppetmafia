@@ -22,7 +22,7 @@ import javax.microedition.midlet.*;
 public class SVGSimpleMidlet extends MIDlet implements CommandListener {
     //set up variables for new svgCanvas, menus, parser
     SVGStaticCanvas svgCanvas = null;
-    Command exit,zoomin,zoomout,cmd1,getstop,getshuttle;
+    Command exit,zoomin,zoomout,cmd1,getstopeast,getstopwest,getshuttle;
     LocPosition lp;
     SimulateData sd;
     Parser par;
@@ -101,14 +101,16 @@ public class SVGSimpleMidlet extends MIDlet implements CommandListener {
             svgCanvas = new SVGStaticCanvas(true, lp, canv);
             //set up menu with exit, zoom in/out, getstop and getshuttle
             exit = new Command("Exit", Command.SCREEN, 0);
-            zoomin = new Command("Zoom in", Command.SCREEN, 1);
-            zoomout = new Command("Zoom out", Command.SCREEN, 1);
-            getstop = new Command("Show Closest Shuttle Stop", Command.SCREEN, 1);
+            //zoomin = new Command("Zoom in", Command.SCREEN, 1);
+            //zoomout = new Command("Zoom out", Command.SCREEN, 1);
+            getstopeast = new Command("Show Closest East Shuttle Stop", Command.SCREEN, 1);
+            getstopwest = new Command("Show Closest West Shuttle Stop", Command.SCREEN, 1);
             getshuttle = new Command("Show Closest Shuttle", Command.SCREEN, 1);
             svgCanvas.addCommand(exit);
-            svgCanvas.addCommand(zoomin);
-            svgCanvas.addCommand(zoomout);
-            svgCanvas.addCommand(getstop);
+            //svgCanvas.addCommand(zoomin);
+            //svgCanvas.addCommand(zoomout);
+            svgCanvas.addCommand(getstopeast);
+            svgCanvas.addCommand(getstopwest);
             svgCanvas.addCommand(getshuttle);
             svgCanvas.setCommandListener(new CommandListener() {
 
@@ -121,15 +123,20 @@ public class SVGSimpleMidlet extends MIDlet implements CommandListener {
                         svgCanvas = null;
                         disp.setCurrent( getList());
                     }
-                    else if(c == zoomin) {
+                    /*else if(c == zoomin) {
                             svgCanvas.zoomIn();
                         }
                     else if(c== zoomout) {
                                 svgCanvas.zoomOut();
+                    }*/
+                    else if(c== getstopeast){
+                        svgCanvas.showStop("East");
                     }
-                    else if(c== getstop){
+                    else if(c== getstopwest){
+                        svgCanvas.showStop("West");
                     }
                     else if(c== getshuttle){
+                        svgCanvas.showBus();
                     }
                 }
             });
