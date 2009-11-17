@@ -34,7 +34,7 @@ public class Parser{
                 //shuttles = new Vector();
 
                 //Open http connection
-		HttpConnection httpConnection = (HttpConnection) Connector.open(URL);
+                HttpConnection httpConnection = (HttpConnection) Connector.open(URL);
 
                 //Initilialize XML parser
                 KXmlParser parser = new KXmlParser();
