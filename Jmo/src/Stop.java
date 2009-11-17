@@ -7,6 +7,8 @@
  *
  * @author wackss
  */
+
+//Stop is a subclass of Position, and has a name to describe the specific stop
 public class Stop extends Position {
 
     private String name;
