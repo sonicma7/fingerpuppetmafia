@@ -33,12 +33,11 @@ public class UserLocation extends Position {
     public int getClosestStop(Route route) {
         double minDist = 9999;
         int closestStopIndex = -1;
-        Stop tempStop = null;
+        Position tempStop = null;
 
         for (int i=0; i<route.getStopList().size(); i++) {
-            Position temp = (Position)(route.getStopList().elementAt(i));
-            if (temp.isStop()) {
-                tempStop = (Stop)temp;
+            tempStop = (Position)(route.getStopList().elementAt(i));
+            if (tempStop.isStop()) {
                 double tempDist = this.getDistanceTo(tempStop);
                 if (tempDist <= minDist) {
                     minDist = tempDist;

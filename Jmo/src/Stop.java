@@ -9,6 +9,7 @@
  */
 
 //Stop is a subclass of Position, and has a name to describe the specific stop
+/* NO LONGER NEEDED, NO CODE SHOULD USE THIS CLASS!
 public class Stop extends Position {
 
     private String name;
@@ -30,4 +31,4 @@ public class Stop extends Position {
     public void setName(String name) {
         this.name = name;
     }
-}
+}*/
