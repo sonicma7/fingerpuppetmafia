@@ -9,8 +9,14 @@ import java.util.Vector;
  *
  * @author wackss
  */
+
+/*
+ * UserLocation, a subclass of Position, defines the Position of the user
+ * (the coordinates that the phone GPS returns)
+ */
 public class UserLocation extends Position {
 
+    //we just use the Position constructors
     public UserLocation() {
         super();
     }
@@ -19,6 +25,11 @@ public class UserLocation extends Position {
         super(lat, lon);
     }
 
+    /*
+     * returns the index of the stop closest to the user
+     * simply iterates through the stops in the route and keeps track of the
+     * closest one
+     */
     public int getClosestStop(Route route) {
         double minDist = 9999;
         int closestStopIndex = -1;
@@ -39,6 +50,11 @@ public class UserLocation extends Position {
         return closestStopIndex;
     }
 
+    /*
+     * returns the index of the shuttle closest to the user
+     * simply iterates through the shuttles and keeps track of the
+     * closest one
+     */
     public Shuttle getClosestShuttle(Vector shuttles) {
         Shuttle closestShuttle = null;
         double minDist = 9999;
@@ -55,6 +71,15 @@ public class UserLocation extends Position {
         return closestShuttle;
     }
 
+    /*
+     * Returns the approximate amount of time until a shuttle reaches a stop
+     * on a route.
+     *
+     * the ETA is calculated using the average time for each stop, along with
+     * the isBetweenPositions function of the Route class
+     *
+     * returns -1 if shuttle is not found on the route
+     */
     public double getETA(Shuttle shuttle, int stopNum, Route route) {
         double eta = 0;
         boolean done = false;

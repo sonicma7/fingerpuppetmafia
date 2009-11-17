@@ -1,8 +1,9 @@
-// Placeholder
+// this class describes a shuttle, which has a position on the map
 public class Shuttle {
     private Position position;
     private String description;
 
+    //default constructor, starts with coordinates of 0,0
     public Shuttle() {
         position = new Position();
         position.setLongitude(0.0);
@@ -10,11 +11,13 @@ public class Shuttle {
         description = " A Bus";
     }
 
+    //constructor for specific coordinates
     public void setCoordinates(double longitude, double latitude){
         position.setLongitude(longitude);
         position.setLatitude(latitude);
     }
 
+    //standard getters & setters
     public void setCoordiantes(Position p){
         position = p;
     }
