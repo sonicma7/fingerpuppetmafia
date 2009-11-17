@@ -19,6 +19,8 @@ public class Position {
     protected double latitude;
     protected double longitude;
 
+    protected String name;
+
     protected boolean isStop;
 
     //default constructor sets the coordinates to 0
@@ -32,6 +34,20 @@ public class Position {
         this.latitude = lat;
         this.longitude = lon;
         isStop = false;
+    }
+
+    public Position(double lat, double lon, boolean stop) {
+        this.latitude = lat;
+        this.longitude = lon;
+        isStop = stop;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     //standard getters & setters
