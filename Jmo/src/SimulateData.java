@@ -9,8 +9,6 @@
  */
 
 import java.util.*;
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.TextBox;
 
 /* The Simulate Data class is a thread that simulates data that could be
