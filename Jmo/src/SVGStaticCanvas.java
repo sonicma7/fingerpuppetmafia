@@ -9,7 +9,7 @@ import org.w3c.dom.svg.SVGPoint;
 import org.w3c.dom.svg.SVGRect;
 import org.w3c.dom.svg.SVGSVGElement;
 
-/*SVGStaticCanvas loads the scalable vector graphics files when called, uses Graphics g,
+/*SVGStaticCanvas loads the scalable vector graphics files when called, uses Graphics screen,
  * Paint, repaint, zoom in and out, moving between the stops as well as running the 
  * main part of the program with threads, sleeping them when necessary
  */
@@ -27,13 +27,13 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
 
 
     //the following variables set up the SVG image and deal with positioning
-    private ScalableGraphics gc;
-    SVGSVGElement myEl = null;
-    SVGPoint p1;
+    private ScalableGraphics graphics;
+    SVGSVGElement svgelement = null;
+    SVGPoint point;
     SVGRect myRect;
-    float f1,fw,fh,fz;
+    float rectwidth,rectheight,zoom;
     int xcord=0, ycord=0;
-    LocPosition mylp;
+    LocPosition locpos;
     float xoffset = 0, yoffset = 0;
 
     //the following variables set up, call and slow down the parser
@@ -48,8 +48,8 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
      */
     protected   SVGStaticCanvas(boolean supKeyEvent,LocPosition lp, int canvas ) {
         super(true);
-        mylp = lp;
-        gc = ScalableGraphics.createInstance();
+        locpos = lp;
+        graphics = ScalableGraphics.createInstance();
         this.setFullScreenMode(true);
         //depending on what canvas number is, try and create the image
         if(canvas == 1){
@@ -82,29 +82,29 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
             }
         }
                 
-        myEl = (SVGSVGElement)(svgImage.getDocument().getDocumentElement());
-        myRect = myEl.getBBox();
-        fw=myRect.getWidth();
-        fh=myRect.getHeight();        
+        svgelement = (SVGSVGElement)(svgImage.getDocument().getDocumentElement());
+        myRect = svgelement.getBBox();
+        rectwidth=myRect.getWidth();
+        rectheight=myRect.getHeight();
     }
 
     /*Paint is responsible for refreshing the SVG image, displaying the user
      * location, as well as the locations of all of the shuttles
      */
-    public void paint(Graphics g){
+    public void paint(Graphics screen){
         //set up initial SVG image with background
-        g.setColor(0x00ffff50);
-        g.fillRect(0, 0, getWidth(), getHeight());    
-        g.setColor(0x00ffff50);
-        gc.bindTarget(g);
-        g.setColor(0x00ff5050);        
-        gc.render(0, 0, svgImage);
-        g.setColor(0x0000000);
+        screen.setColor(0x00ffff50);
+        screen.fillRect(0, 0, getWidth(), getHeight());
+        screen.setColor(0x00ffff50);
+        graphics.bindTarget(screen);
+        screen.setColor(0x00ff5050);
+        graphics.render(0, 0, svgImage);
+        screen.setColor(0x0000000);
         //Currently a person is an x that is boxed in
-        g.drawLine(xcord + (int)(xoffset) - 4, ycord + (int)(yoffset) - 4, xcord + (int)(xoffset) + 4, ycord + (int)(yoffset) + 4);
-        g.drawLine(xcord + (int)(xoffset) - 4, ycord + (int)(yoffset) + 4, xcord + (int)(xoffset) + 4, ycord + (int)(yoffset) - 4);
-        g.drawRect(xcord + (int)(xoffset) - 4, ycord + (int)(yoffset) - 4,8,8);
-        gc.releaseTarget();
+        screen.drawLine(xcord + (int)(xoffset) - 4, ycord + (int)(yoffset) - 4, xcord + (int)(xoffset) + 4, ycord + (int)(yoffset) + 4);
+        screen.drawLine(xcord + (int)(xoffset) - 4, ycord + (int)(yoffset) + 4, xcord + (int)(xoffset) + 4, ycord + (int)(yoffset) - 4);
+        screen.drawRect(xcord + (int)(xoffset) - 4, ycord + (int)(yoffset) - 4,8,8);
+        graphics.releaseTarget();
 
         //as long as we have data for the shuttles, try and get them
         if(shuttles != null){
@@ -117,10 +117,10 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
                 y = (((Shuttle)(shuttles.elementAt(q))).getCoordinates().getLatitude() - minlat) * latvar  + (int)yoffset + 90;
 
                 //displays the shuttles as a rectangle
-                gc.bindTarget(g);
-                g.setColor(0x0000000);
-                g.fillRect((int)x,(int)y,8,8);
-                gc.releaseTarget();
+                graphics.bindTarget(screen);
+                screen.setColor(0x0000000);
+                screen.fillRect((int)x,(int)y,8,8);
+                graphics.releaseTarget();
             }
 
         }
@@ -133,21 +133,21 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
      */
     public void zoomIn() {
     /*    //get old coordinates
-        float fa =  myEl.getCurrentScale();
-        p1= myEl.getCurrentTranslate();
-        float fx = p1.getX();
-        float fy=p1.getY();
+        float fa =  svgelement.getCurrentScale();
+        point= svgelement.getCurrentTranslate();
+        float x = point.getX();
+        float y=point.getY();
         //update scale
-        myEl.setCurrentScale(myEl.getCurrentScale() * 1.2f);
-        fz= myEl.getCurrentScale() - fa;
+        svgelement.setCurrentScale(svgelement.getCurrentScale() * 1.2f);
+        zoom= svgelement.getCurrentScale() - fa;
         //update new coordinates
-        float transx = fx - (fw/2)*fz;
-        float transy =  fy - (fh/2)*fz ;
-        p1.setX(transx);
-        p1.setY(transy);
+        float transx = x - (rectwidth/2)*zoom;
+        float transy =  y - (rectheight/2)*zoom ;
+        point.setX(transx);
+        point.setY(transy);
         //update bus coordinates
-        xoffset -= (fw/2)*fz;
-        yoffset -= (fw/2)*fz;
+        xoffset -= (rectwidth/2)*zoom;
+        yoffset -= (rectwidth/2)*zoom;
         repaint();*/
     }
 
@@ -157,21 +157,21 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
      */
     public void zoomOut() {
         /*//get old coordinates
-        float fa =  myEl.getCurrentScale();
-        p1= myEl.getCurrentTranslate();
-        float fx = p1.getX();
-        float fy=p1.getY();
+        float fa =  svgelement.getCurrentScale();
+        point= svgelement.getCurrentTranslate();
+        float x = point.getX();
+        float y=point.getY();
         //update scale
-        myEl.setCurrentScale(myEl.getCurrentScale() /(1.20f));
-        float fz= fa - myEl.getCurrentScale() ;
+        svgelement.setCurrentScale(svgelement.getCurrentScale() /(1.20f));
+        float zoom= fa - svgelement.getCurrentScale() ;
         //update new coordinates
-        float transx= fx + (fw/2)*fz;
-        float transy =  fy + (fh/2)*fz ;
-        p1.setX( transx);
-        p1.setY(transy);
+        float transx= x + (rectwidth/2)*zoom;
+        float transy =  y + (rectheight/2)*zoom ;
+        point.setX( transx);
+        point.setY(transy);
         //update bus coordinates
-        xoffset += (fw/2)*fz;
-        yoffset += (fw/2)*fz;
+        xoffset += (rectwidth/2)*zoom;
+        yoffset += (rectwidth/2)*zoom;
         repaint();*/
     }
 
@@ -182,7 +182,7 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
      */
     public void showStop(String routename){
         //get the user location
-        /*UserLocation user = new UserLocation(mylp.getLatitude(),mylp.getLongitude());
+        /*UserLocation user = new UserLocation(locpos.getLatitude(),locpos.getLongitude());
         Data thisdata = new Data();
         //get the correct route
         Route thisroute = thisdata.getroute(routename);
@@ -199,8 +199,8 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
         System.out.println("Tranxy: " + transx + "," + transy);
         xoffset = (float)transx;
         yoffset = (float)transy;
-        p1.setX((float) transx);
-        p1.setY((float)transy);
+        point.setX((float) transx);
+        point.setY((float)transy);
         repaint();
     }
      /*showBus gets a new user location and finds the closest shuttle to the user
@@ -209,7 +209,7 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
      */
     public void showBus(){
         //get the user location
-        /*UserLocation user = new UserLocation(mylp.getLatitude(),mylp.getLongitude());
+        /*UserLocation user = new UserLocation(locpos.getLatitude(),locpos.getLongitude());
         //get the correct route
         Shuttle thisshuttle = user.getClosestShuttle(shuttles);
         //based on the stop, get the coordinates
@@ -224,8 +224,8 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
         System.out.println("Tranxy: " + transx + "," + transy);
         xoffset = (float)transx;
         yoffset = (float)transy;
-        p1.setX((float) transx);
-        p1.setY((float)transy);
+        point.setX((float) transx);
+        point.setY((float)transy);
         repaint();
     }
     /* run is responsible for initializing key states, listening for key presses,
@@ -237,34 +237,34 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
         while( true ) {
             //set up key states, current position and check for key presses
             int keyState = getKeyStates();
-            p1= myEl.getCurrentTranslate();
-            float fx= p1.getX();
-            float fy=p1.getY();
+            point= svgelement.getCurrentTranslate();
+            float x= point.getX();
+            float y=point.getY();
 
             //if key is pressed, react correctly (move screen at the moment)
             if ((keyState & LEFT_PRESSED) != 0) {
-                p1.setX(fx + 10);
+                point.setX(x + 10);
                 xoffset += 10;
                 keyState = 0;
             }
             if ((keyState & RIGHT_PRESSED) != 0) {
-                p1.setX(fx - 10);
+                point.setX(x - 10);
                 xoffset -= 10;
                 keyState=0;
             }
             if ((keyState & UP_PRESSED) != 0) {
-                p1.setY(fy + 10);
+                point.setY(y + 10);
                 yoffset += 10;
                 keyState=0;
             }
             if ((keyState & DOWN_PRESSED) != 0) {
-                p1.setY(fy - 10);
+                point.setY(y - 10);
                 yoffset -= 10;
                 keyState=0;
             }
             //get latitude and longitude and calculate coordinate
-            double lat = mylp.getLatitude();
-            double longit = mylp.getLongitude();
+            double lat = locpos.getLatitude();
+            double longit = locpos.getLongitude();
             calc(lat,longit);
             //sleep the thread for 50ms
             try{
