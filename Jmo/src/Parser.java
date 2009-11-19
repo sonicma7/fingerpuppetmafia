@@ -30,8 +30,7 @@ public class Parser{
     class readXML extends Thread{
         public void run() {
             try {
-                // Clear Vector List
-                //shuttles = new Vector();
+                
 
                 //Open http connection
                 HttpConnection httpConnection = (HttpConnection) Connector.open(URL);
@@ -56,6 +55,8 @@ public class Parser{
                 // Begin parsing the Document Tag
                 //Iterate through our XML file
                 boolean parsing = (parser.getEventType() != XmlPullParser.END_TAG);
+                // Clear Vector List
+                shuttles = new Vector();
                 while (parsing) {
                     /* This checks each tag. If it finds a "Placemark"
                      * tag, it knows it's a new shuttle and adds it then
@@ -63,6 +64,8 @@ public class Parser{
                      * to get furthur parsed with the right shuttle
                      * data. */
                     try {
+                        
+                        
                         String nodeName = parser.getName();
 
                         if (nodeName.compareTo("Placemark") == 0) {
