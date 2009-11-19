@@ -20,9 +20,9 @@ public class LocPosition implements Runnable, LocationListener {
     TextBox ltb1;
     Coordinates coordinates = null;
 
-/*Default constructor for LocPosition, sets up Location Position listener,
- * buffer along with criteria
- */
+    /*Default constructor for LocPosition, sets up Location Position listener,
+     * buffer along with criteria
+     */
     public void LocPosition() {
     }
     
@@ -42,9 +42,9 @@ public class LocPosition implements Runnable, LocationListener {
         provider.setLocationListener(this,-1,-1,-1);
     }
     
-/* Sets up thread to continuously output and update current gps locations
- * works every 50ms
- */
+    /* Sets up thread to continuously output and update current gps locations
+     * works every 50ms
+     */
     public void run() {
         while( true ) {
                 String ss1 = new String(sb);
@@ -55,9 +55,9 @@ public class LocPosition implements Runnable, LocationListener {
                     Thread.sleep(50);
                 }
                 catch(Exception e){};
-
         }
     }
+
     /*locationUpdated takes in a provider and a location, gets new locations and
      * updates the current time
      */
@@ -71,6 +71,7 @@ public class LocPosition implements Runnable, LocationListener {
 
     public void providerStateChanged(LocationProvider provider2, int arg1) {
     }
+    
     /*getLatitude returns the current latitude
      */
     public double getLatitude(){

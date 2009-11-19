@@ -56,7 +56,7 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
             try{
                InputStream is = getClass().getResourceAsStream("East.svg");
                svgImage = (SVGImage) SVGImage.createImage(is, null);
-                 }
+            }
             catch(Exception e){
                 e.printStackTrace();
             }
@@ -207,7 +207,7 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
      * After getting shuttle, it adjusts the x and y coordinates of the map so that it
      * will center over the selected shuttle
      */
-        public void showBus(){
+    public void showBus(){
         //get the user location
         /*UserLocation user = new UserLocation(mylp.getLatitude(),mylp.getLongitude());
         //get the correct route

@@ -99,18 +99,18 @@ public class Route {
 
         //now just need to make sure it's close enough
         double t = pointDotLong / longDotLong;
-	if (t < 0.0)
+        if (t < 0.0)
             t = 0.0;
         if (t > 1.0)
             t = 1.0;
 
-	double closestX = loc1.getLatitude() + t*vectorLongX;
-	double closestY = loc1.getLongitude() + t*vectorLongY;
+        double closestX = loc1.getLatitude() + t*vectorLongX;
+        double closestY = loc1.getLongitude() + t*vectorLongY;
 
-	double dx = test.getLatitude() - closestX;
-	double dy = test.getLongitude() - closestY;
+        double dx = test.getLatitude() - closestX;
+        double dy = test.getLongitude() - closestY;
 
-	//d.x /=2;
+        //d.x /=2;
         double dist_sqr = dx*dx + dy*dy;
         //return dist_sqr <= (circle_radius * circle_radius);
 
