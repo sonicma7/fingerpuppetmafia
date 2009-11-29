@@ -8,7 +8,7 @@ import java.util.Date;
 import javax.microedition.lcdui.TextBox;
 import javax.microedition.location.*;
 
-/*LocPosition sets up locations for a person in terms of longitude and latitude
+/* LocPosition sets up locations for a person in terms of longitude and latitude
  */
 public class LocPosition implements Runnable, LocationListener {
     Location locPos;
@@ -19,6 +19,7 @@ public class LocPosition implements Runnable, LocationListener {
     LocationProvider provider= null;
     TextBox ltb1;
     Coordinates coordinates = null;
+    Data thisdata = new Data();
 
     /*Default constructor for LocPosition, sets up Location Position listener,
      * buffer along with criteria
@@ -42,19 +43,55 @@ public class LocPosition implements Runnable, LocationListener {
         provider.setLocationListener(this,-1,-1,-1);
     }
     
-    /* Sets up thread to continuously output and update current gps locations
-     * works every 50ms
+    /* Sets up thread to continuously output and update current gps locations,
+     * along with the closest stop and ETA of next shuttle.  Works every 50ms
+     * after the initial wait to load in the shuttles
      */
     public void run() {
-        while( true ) {
-                String ss1 = new String(sb);
-                ltb1.setString("Lat: " + Double.toString(latitude) + '\n' + "Long:" 
-                        + Double.toString(longitude)+ '\n' + "Time:" + ss1);
-                 
-                try {
-                    Thread.sleep(50);
-                }
-                catch(Exception e){};
+        //figure out which route we are talking about
+        int rte;
+        if (ltb1.getTitle() == "East")
+            rte = 0;
+        else
+            rte = 1;
+        
+        Parser par = new Parser();
+
+        //run parser
+        par.go();
+        try{
+        Thread.sleep(5000);
+        }
+        catch(Exception e){
+            System.out.println("Exception: " + e);
+         }
+        //set data up with shuttles
+        thisdata.setShuttles(par.getShuttles());
+
+        if(thisdata.getShuttles() != null){
+            //get the user location
+            UserLocation user = new UserLocation(this.getLatitude(),this.getLongitude());
+            System.out.println("User:" + this.getLatitude() + "," + this.getLongitude());
+            //get the correct route
+            Route thisroute = ((Route)(thisdata.getRoutes()).elementAt(rte));
+            //get closest stop, position of that stop and then the closest shuttle
+            int stop = user.getClosestStop(thisroute);
+            Position pos = (Position)(thisroute.getStopList().elementAt(stop));
+            Shuttle thisshuttle = user.getClosestShuttle(thisdata.getShuttles());
+
+            //append the string with the correct information about student and relative objects
+            while( true ) {
+                    String ss1 = new String(sb);
+                    ltb1.setString("Lat: " + Double.toString(latitude) + '\n' + "Long:"
+                            + Double.toString(longitude)+ '\n' + "Time:" + ss1 + '\n'
+                            + "Closest Stop:" + pos.getName() + '\n'
+                            + "Closest Shuttle ETA:" + (int)user.getETA(thisshuttle, stop, thisroute) + " Seconds");
+
+                    try {
+                        Thread.sleep(50);
+                    }
+                    catch(Exception e){};
+            }
         }
     }
 
