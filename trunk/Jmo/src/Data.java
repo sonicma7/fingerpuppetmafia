@@ -120,16 +120,17 @@ public class Data {
         r2.addPosition(p31, 10);
 
         routes = new Vector();
+        //east is in position 1, west is in position 2
         routes.addElement(r1);
         routes.addElement(r2);
 
         /* the shuttle data will be updated so we just need to initialize
          * the correct # of shuttles
          */
-        int numShuttles = 2;
+  /*      int numShuttles = 2;
         for (int i=0; i<numShuttles; i++) {
             shuttles.addElement(new Shuttle());
-        }
+        }*/
     }
 
     public Vector getRoutes() {

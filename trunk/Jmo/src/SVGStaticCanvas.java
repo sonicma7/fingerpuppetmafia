@@ -1,6 +1,5 @@
 
 import java.io.InputStream;
-import java.util.Vector;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.m2g.SVGImage;
@@ -38,8 +37,8 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
 
     //the following variables set up, call and slow down the parser
     Parser myparse = new Parser();
-    Vector shuttles;
     int counter = 0;
+    Data thisdata = new Data();
     
 
     /* SVGStaticCanvas sets up our canvases, depending on which canvas we want called.
@@ -107,14 +106,14 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
         graphics.releaseTarget();
 
         //as long as we have data for the shuttles, try and get them
-        if(shuttles != null){
+        if(thisdata.getShuttles() != null){
             //x and y coordinate variables for the x and y location of shuttles
             double x;
             double y;
             //loops through shuttles, takes zoom into account
-            for (int q = 0; q < shuttles.size(); q++){
-                x = (((Shuttle)(shuttles.elementAt(q))).getCoordinates().getLongitude() - minlong) * longvar + (int)xoffset - 5;
-                y = (((Shuttle)(shuttles.elementAt(q))).getCoordinates().getLatitude() - minlat) * latvar  + (int)yoffset + 90;
+            for (int q = 0; q < thisdata.getShuttles().size(); q++){
+                x = (((Shuttle)(thisdata.getShuttles().elementAt(q))).getCoordinates().getLongitude() - minlong) * longvar + (int)xoffset - 5;
+                y = (((Shuttle)(thisdata.getShuttles().elementAt(q))).getCoordinates().getLatitude() - minlat) * latvar  + (int)yoffset + 90;
 
                 //displays the shuttles as a rectangle
                 graphics.bindTarget(screen);
@@ -181,21 +180,31 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
      * will center over the selected stop
      */
     public void showStop(String routename){
+        int rte;
+
+        if(routename == "East")
+            rte = 0;
+        else{
+            rte = 1;
+        }
+
         //get the user location
-        /*UserLocation user = new UserLocation(locpos.getLatitude(),locpos.getLongitude());
-        Data thisdata = new Data();
+        UserLocation user = new UserLocation(locpos.getLatitude(),locpos.getLongitude());
+        System.out.println("User:" + locpos.getLatitude() + "," + locpos.getLongitude());
         //get the correct route
-        Route thisroute = thisdata.getroute(routename);
-        int stop = user.getClosestStop(thisdata.getroute(thisroute));
+        Route thisroute = ((Route)(thisdata.getRoutes()).elementAt(rte));
+        int stop = user.getClosestStop(thisroute);
         //based on the stop, get the coordinates
+        
         double longit = ((Position)(thisroute.getStopList().elementAt(stop))).getLongitude();
-        double lat = ((Position)(thisroute.getStopList().elementAt(stop))).getLatitude();*/
-        double longit = -73.66587281227112;
-        double lat = 42.735692973147266;
+        double lat = ((Position)(thisroute.getStopList().elementAt(stop))).getLatitude();
+        System.out.println("stop:" + stop + " At Latitude: " + lat + " and Longitude:" + longit);
+        //double longit = -73.66587281227112;
+        //double lat = 42.735692973147266;
 
         //using those coordinates, adjust the viewing plane
-        double transy  = (lat - minlat) * latvar + 90 - 240/2;
-        double transx  = 210/2 -(longit - minlong) * longvar - 5;
+        double transy  = -(lat - minlat) * latvar - 90 + 240/2;
+        double transx  = 210/2 -(longit - minlong) * longvar;
         System.out.println("Tranxy: " + transx + "," + transy);
         xoffset = (float)transx;
         yoffset = (float)transy;
@@ -209,18 +218,18 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
      */
     public void showBus(){
         //get the user location
-        /*UserLocation user = new UserLocation(locpos.getLatitude(),locpos.getLongitude());
+        UserLocation user = new UserLocation(locpos.getLatitude(),locpos.getLongitude());
         //get the correct route
-        Shuttle thisshuttle = user.getClosestShuttle(shuttles);
+        Shuttle thisshuttle = user.getClosestShuttle(thisdata.getShuttles());
         //based on the stop, get the coordinates
         double longit = ((Position)(thisshuttle.getCoordinates())).getLongitude();
-        double lat = ((Position)(thisshuttle.getCoordinates())).getLatitude();*/
-        double longit = -73.67587281227112;
-        double lat = 42.738692973147266;
+        double lat = ((Position)(thisshuttle.getCoordinates())).getLatitude();
+        //double longit = -73.67587281227112;
+        //double lat = 42.738692973147266;
 
         //using those coordinates, adjust the viewing plane
-        double transy  = (lat - minlat) * latvar + 90 - 240/2;
-        double transx  = 210/2 -(longit - minlong) * longvar - 5;
+        double transy  = 240/2 - (lat - minlat) * latvar - 90;
+        double transx  = 210/2 -(longit - minlong) * longvar;
         System.out.println("Tranxy: " + transx + "," + transy);
         xoffset = (float)transx;
         yoffset = (float)transy;
@@ -273,6 +282,7 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
                 if (counter == 50){
                     counter++;
                     myparse.go();
+                    thisdata.setShuttles(myparse.getShuttles());
                 }
                 //this is so we do not get new data every 50ms
                 else if (counter < 200 ){
@@ -282,7 +292,7 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
                 else{
                     counter = 0;
                     System.out.println("Something happened!!!!");
-                    shuttles = myparse.getShuttles();
+                    
                     repaint();
                     
                 }
@@ -297,9 +307,11 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
     /*calc takes in longitude and latitude and calculates their respective locations
      * with regard to the SVG image in pixels
      */
-    void calc(double lat, double longit){   
-        double z = (42.73772604279948 - minlat) * latvar + 90;
-        double r = (-73.66660237312317 - minlong) * longvar - 5;
+    void calc(double lat, double longit){  
+        
+        //Test coordinates Lat :42.72204709206166f   Long:  -73.68903636932373f
+        double z = (locpos.getLatitude() - minlat) * latvar + 90;
+        double r = (locpos.getLongitude() - minlong) * longvar;
         //check to see if we are in bounds
          ycord = (int) z;
          xcord = (int) r;

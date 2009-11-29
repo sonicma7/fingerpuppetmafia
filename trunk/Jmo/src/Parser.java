@@ -15,10 +15,10 @@ import java.util.Vector;
 public class Parser{
 
     // URL of shuttle KML file.
-    static final String URL = "http://shuttles.rpi.edu/positions/current.kml";
+    //static final String URL = "http://shuttles.rpi.edu/positions/current.kml";
 
     // Temp since main site seems down....
-    //static final String URL = "http://dl.dropbox.com/u/2923833/current.kml";
+    static final String URL = "http://dl.dropbox.com/u/2923833/current.kml";
 
     // Shuttle Data
     Vector shuttles = new Vector();

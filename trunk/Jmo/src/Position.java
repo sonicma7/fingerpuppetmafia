@@ -30,13 +30,13 @@ public class Position {
     }
 
     //constructor for a specific latitude & longitude
-    public Position(double lat, double lon) {
+    public Position(double lon, double lat) {
         this.latitude = lat;
         this.longitude = lon;
         isStop = false;
     }
 
-    public Position(double lat, double lon, boolean stop) {
+    public Position(double lon, double lat, boolean stop) {
         this.latitude = lat;
         this.longitude = lon;
         isStop = stop;
@@ -73,9 +73,13 @@ public class Position {
 
     //this function simply returns the distance from this point to another point
     public double getDistanceTo(Position other) {
-        double xdist = (other.getLatitude() - this.latitude);
-        double ydist = (other.getLongitude() - this.longitude);
+        double xdist = (other.getLatitude() - this.longitude);
+        double ydist = (other.getLongitude() - this.latitude);
+        //System.out.println("USER LOCATION?: " + this.latitude + ", " + this.longitude);
+       //System.out.println("Stop: " + other.getName() + "  "+ other.latitude + ", " + other.longitude);
+        double dist = Math.sqrt(xdist*xdist + ydist*ydist);
+        //System.out.println(dist);
 
-        return Math.sqrt(xdist*xdist + ydist*ydist);
+        return dist;
     }
 }
