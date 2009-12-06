@@ -50,6 +50,7 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
         locpos = lp;
         graphics = ScalableGraphics.createInstance();
         this.setFullScreenMode(true);
+        
         //depending on what canvas number is, try and create the image
         if(canvas == 1){
             try{
@@ -79,12 +80,14 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
                     e.printStackTrace();
                 }
             }
+
         }
                 
         svgelement = (SVGSVGElement)(svgImage.getDocument().getDocumentElement());
         myRect = svgelement.getBBox();
         rectwidth=myRect.getWidth();
         rectheight=myRect.getHeight();
+        svgelement.setCurrentScale(svgelement.getCurrentScale() /(0.5f));
     }
 
     /*Paint is responsible for refreshing the SVG image, displaying the user
@@ -112,13 +115,20 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
             double y;
             //loops through shuttles, takes zoom into account
             for (int q = 0; q < thisdata.getShuttles().size(); q++){
-                x = (((Shuttle)(thisdata.getShuttles().elementAt(q))).getCoordinates().getLongitude() - minlong) * longvar + (int)xoffset - 5;
-                y = (((Shuttle)(thisdata.getShuttles().elementAt(q))).getCoordinates().getLatitude() - minlat) * latvar  + (int)yoffset + 90;
+                x = (((Shuttle)(thisdata.getShuttles().elementAt(q))).getCoordinates().getLongitude() - minlong) * longvar ;
+                y = (((Shuttle)(thisdata.getShuttles().elementAt(q))).getCoordinates().getLatitude() - minlat) * latvar  ;
+                x = x/0.5 - 10 + (int)xoffset;
+                y = y/0.5 + 185 + (int)yoffset;
+
+                //x = 5 + (int)xoffset;
+                //y = 90 + (int)yoffset;
 
                 //displays the shuttles as a rectangle
                 graphics.bindTarget(screen);
-                screen.setColor(0x0000000);
+                screen.setColor(0xFFFF00);
                 screen.fillRect((int)x,(int)y,8,8);
+                screen.setColor(0x0000000);
+                screen.drawRect((int)x,(int)y,8,8);
                 graphics.releaseTarget();
             }
 
@@ -203,8 +213,8 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
         //double lat = 42.735692973147266;
 
         //using those coordinates, adjust the viewing plane
-        double transy  = -(lat - minlat) * latvar - 90 + 240/2;
-        double transx  = 210/2 -(longit - minlong) * longvar;
+        double transy  = (-(lat - minlat) * latvar)*2 + 240/2 - 185;
+        double transx  = 210/2 -((longit - minlong) * longvar)*2 + 10;
         System.out.println("Tranxy: " + transx + "," + transy);
         xoffset = (float)transx;
         yoffset = (float)transy;
@@ -228,8 +238,8 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
         //double lat = 42.738692973147266;
 
         //using those coordinates, adjust the viewing plane
-        double transy  = 240/2 - (lat - minlat) * latvar - 90;
-        double transx  = 210/2 -(longit - minlong) * longvar;
+        double transy  = (-(lat - minlat) * latvar)*2 + 240/2 - 185;
+        double transx  = 210/2 -((longit - minlong) * longvar)*2 + 10;
         System.out.println("Tranxy: " + transx + "," + transy);
         xoffset = (float)transx;
         yoffset = (float)transy;
@@ -282,7 +292,7 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
                 if (counter == 50){
                     counter++;
                     myparse.go();
-                    thisdata.setShuttles(myparse.getShuttles());
+                    
                 }
                 //this is so we do not get new data every 50ms
                 else if (counter < 200 ){
@@ -292,7 +302,7 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
                 else{
                     counter = 0;
                     System.out.println("Something happened!!!!");
-                    
+                    thisdata.setShuttles(myparse.getShuttles());
                     repaint();
                     
                 }
@@ -310,8 +320,8 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
     void calc(double lat, double longit){  
         
         //Test coordinates Lat :42.72204709206166f   Long:  -73.68903636932373f
-        double z = (locpos.getLatitude() - minlat) * latvar + 90;
-        double r = (locpos.getLongitude() - minlong) * longvar;
+        double z = ((locpos.getLatitude() - minlat) * latvar)*2 + 185;
+        double r = ((locpos.getLongitude() - minlong) * longvar)*2 - 10;
         //check to see if we are in bounds
          ycord = (int) z;
          xcord = (int) r;

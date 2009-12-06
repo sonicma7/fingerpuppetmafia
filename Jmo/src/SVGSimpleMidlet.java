@@ -137,8 +137,11 @@ public class SVGSimpleMidlet extends MIDlet implements CommandListener {
                 */
                 public void commandAction(Command c, Displayable d) {
                     if(c == exit) {
-                        canvThr = null;
-                        svgCanvas = null;
+
+                        /*svgCanvas = null;
+                        notifyDestroyed();*/
+                        canvThr = new Thread(svgCanvas);
+                        canvThr.start();
                         disp.setCurrent( getList());
                     }
                     /*else if(c == zoomin) {
