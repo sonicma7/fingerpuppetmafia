@@ -36,6 +36,7 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
     float xoffset = 0, yoffset = 0;
 
     //the following variables set up, call and slow down the parser
+    int parseno = 0;
     Parser myparse = new Parser();
     int counter = 0;
     Data thisdata = new Data();
@@ -291,7 +292,11 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
                 //after 2500 ms, start the parser
                 if (counter == 50){
                     counter++;
-                    myparse.go();
+                    parseno++;
+                    if (parseno > 5) {
+                        parseno = 1;
+                    }
+                    myparse.go(Integer.toString(parseno));
                     
                 }
                 //this is so we do not get new data every 50ms

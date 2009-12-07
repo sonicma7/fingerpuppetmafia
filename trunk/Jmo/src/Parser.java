@@ -14,11 +14,11 @@ import java.util.Vector;
 // This is the main class. It holds the classes for the parser and such.
 public class Parser{
 
-    // URL of shuttle KML file.
+    // URL of actual shuttle data
     //static final String URL = "http://shuttles.rpi.edu/positions/current.kml";
 
-    // Temp since main site seems down....
-    static final String URL = "http://dl.dropbox.com/u/2923833/current.kml";
+    // Test data url
+    String URL = "http://dl.dropbox.com/u/2923833/kml/" + "1" + ".kml";
 
     // Shuttle Data
     Vector shuttles = new Vector();
@@ -30,6 +30,8 @@ public class Parser{
     class readXML extends Thread{
         public void run() {
             try {
+
+                System.out.println(URL);
                 
 
                 //Open http connection
@@ -194,7 +196,8 @@ public class Parser{
         }
     }
 
-    public void go(){
+    public void go(String file){
+        URL = URL = "http://dl.dropbox.com/u/2923833/kml/" + file + ".kml";
         new readXML().start();
     }
 
