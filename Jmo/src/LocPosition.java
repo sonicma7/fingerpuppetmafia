@@ -11,6 +11,7 @@ import javax.microedition.location.*;
 /* LocPosition sets up locations for a person in terms of longitude and latitude
  */
 public class LocPosition implements Runnable, LocationListener {
+    int file = 0;
     Location locPos;
     StringBuffer sb = null;
 
@@ -55,10 +56,16 @@ public class LocPosition implements Runnable, LocationListener {
         else
             rte = 1;
         
+        // Reset the kml file
+        file++;
+        if (file > 5) {
+            file = 1;
+        }
+        
         Parser par = new Parser();
 
         //run parser
-        par.go();
+        par.go("1");
         try{
         Thread.sleep(5000);
         }
