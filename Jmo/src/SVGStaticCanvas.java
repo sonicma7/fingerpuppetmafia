@@ -324,7 +324,7 @@ class SVGStaticCanvas extends GameCanvas implements Runnable {
      */
     void calc(double lat, double longit){  
         
-        //Test coordinates Lat :42.72204709206166f   Long:  -73.68903636932373f
+        //Test coordinates Lat :42.730854314509536f   Long:  -73.68256688117981f
         double z = ((locpos.getLatitude() - minlat) * latvar)*2 + 185;
         double r = ((locpos.getLongitude() - minlong) * longvar)*2 - 10;
         //check to see if we are in bounds

@@ -184,7 +184,6 @@ public class SVGSimpleMidlet extends MIDlet implements CommandListener {
             list.append("See Shuttle Route East",null);
             list.append("See Shuttle Route West",null);
             list.append("Simulate Data", null);
-            list.append("Get Data", null);
             list.append("Exit",null);
             list.setCommandListener(this);
         }
@@ -215,9 +214,6 @@ public class SVGSimpleMidlet extends MIDlet implements CommandListener {
             }
             else if (__selectedString.equals("Simulate Data")) {
                 disp.setCurrent(tb2);
-            }
-            else if (__selectedString.equals("Get Data")) {
-                par.go();      //case for Getting Data
             }
                 
             else if (__selectedString.equals("Exit")) {
